@@ -1,0 +1,99 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+
+
+@if (Model.Projects != null) 
+{ 
+
+
+
+    <div class="text-center">
+        <h1>@Model.ProjectName </h1>
+        <div class="row">
+
+            @foreach (var p in Model.Projects)
+            {
+                
+            <div class="col-3">
+                @*<a href="Edit-@p.ProjectNameRoute">*@
+                    <div class="card">
+
+                        <div class="card-title">  @p.ProjectName</div>
+                        <div><img class="card-img" src="~/img/@p.CoverImageURL" /></div>
+                        <div class="card-body">Created by @p.OwnerName on @p.CreatedDate</div>
+                        <form method="post">
+                            <button type="submit" asp-page-handler="Edit" asp-route-id="@p.ID">Edit Project</button>
+                            <button type="submit" asp-page-handler="Display" asp-route-id="@p.ID">Display Project</button>
+                        </form>
+
+                    </div>
+               @* </a>*@
+            </div>
+               
+            }
+            <a href="?newproj=true" data-toggle="modal" data-target="#exampleModalCenter">
+                <div class="col-3 card">
+
+                    <div class="card-title">New Project</div>
+                    <div class="card-img"><img src="~/plus-solid.svg" width="70" /></div>
+
+
+                </div>
+            </a>
+        </div>
+
+
+
+
+
+    </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Project.ProjectName" class="control-label"></label>
+                            <input asp-for="Project.ProjectName" class="form-control" />
+                            <span asp-validation-for="Project.ProjectName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Project.OwnerName" class="control-label"></label>
+                            <input asp-for="Project.OwnerName" class="form-control" />
+                            <span asp-validation-for="Project.OwnerName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UploadedImage" class="control-label"></label>
+                            <input asp-for="UploadedImage" class="form-control" />
+                            <span asp-validation-for="UploadedImage" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+}
