@@ -17,12 +17,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.SitePages[0].Title)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SitePages[0].PageBody)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SitePages[0].ImageURL)
-            </th>
+           
             <th>
                 @Html.DisplayNameFor(model => model.SitePages[0].TimesVisited)
             </th>
@@ -37,14 +32,12 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    <a href="?pageid=@item.ID">
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </a>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PageBody)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ImageURL)
-                </td>
+                
+                
                 <td>
                     @Html.DisplayFor(modelItem => item.TimesVisited)
                 </td>
@@ -65,16 +58,29 @@
       tinymce.init({
         selector: '#mytextarea'
       });
+
+    tinymce.init({
+        selector: '#myeditable-h1',
+        inline: true,
+        menubar: false,
+        toolbar: 'undo redo'
+    });
+
 </script>
+
+
+@if(Model.PageId != 0)
+{
+
 
 <div class="row">
 
 
     <div class="col-6">
         <h1>Welcome to Edit Mode</h1>
-        <h1>TinyMCE Quick Start Guide</h1>
+       
         <form method="post">
-            <textarea asp-for="TextBlock" id="mytextarea">Hello, World!</textarea>
+            <textarea asp-for="TextBlock" id="mytextarea">@Model.TextBlock</textarea>
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -82,9 +88,10 @@
 
         <h1>Preview</h1>
         <div id="wrap">
-            <iframe id="scaled-frame" src="/display/@Model.CurrentProject.ProjectNameRoute" title="Homepage" height="600" width="800" ; target="/"></iframe>
+            <iframe id="scaled-frame" src="/display/@Model.CurrentProject.ProjectNameRoute?pageid=@Model.PageId" title="Homepage" height="600" width="800" ; target="/"></iframe>
         </div>
 
     </div>
 
 </div>
+}

@@ -67,6 +67,13 @@ namespace Public.Pages
             Project.CoverImageURL = UploadedImage != null ? UploadedImage.FileName : "";
             Project.CreatedDate = DateTime.Now;
             Project.OwnerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            SitePage index = new()
+            {
+                IsIndex = true,
+                Title = "Index",
+
+            };
+            Project.Pages.Add(index);
             _ctx.Projects.Add(Project);
             await _ctx.SaveChangesAsync();
 
@@ -76,9 +83,8 @@ namespace Public.Pages
         public async Task<IActionResult> OnPostEditAsync(int ID)
         {
             CurrentProject = await _ctx.Projects.FindAsync(ID);
-            //CurrentProjectID = ID;
             HttpContext.Session.SetString("CurrentProjectID", $"{ID}");
-            var s = HttpContext.Session.GetString("CurrentProjectID");
+           
             return Redirect("/cp/" + CurrentProject.ProjectNameRoute);
 
         }
@@ -86,7 +92,8 @@ namespace Public.Pages
         public async Task<IActionResult> OnPostDisplayAsync(int ID)
         {
             CurrentProject = await _ctx.Projects.FindAsync(ID);
-            //CurrentProjectID = ID;
+            HttpContext.Session.SetString("CurrentProjectID", $"{ID}");
+
             return Redirect("/display/" + CurrentProject.ProjectNameRoute);
         }
     }

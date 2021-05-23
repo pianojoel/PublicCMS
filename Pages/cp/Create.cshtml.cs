@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ namespace Public.Pages.cp
     public class CreateModel : PageModel
     {
         private readonly Public.Data.PublicContext _context;
+        public Project CurrentProject { get; set; }
 
         public CreateModel(Public.Data.PublicContext context)
         {
@@ -35,11 +37,19 @@ namespace Public.Pages.cp
             {
                 return Page();
             }
-
+            var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
+            CurrentProject = _context.Projects.Find(id);
+            SitePage.TimesVisited = 0;
+            SitePage.ProjectID = CurrentProject.ID;
+            SitePage.PageBody = "Hello World!";
             _context.SitePage.Add(SitePage);
+
+
+
+
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+            return Redirect("/cp/" + CurrentProject.ProjectNameRoute);
         }
     }
 }
