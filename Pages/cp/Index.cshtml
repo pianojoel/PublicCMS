@@ -1,4 +1,5 @@
 ﻿@page "{projectname?}/{id?}"
+@using Microsoft.AspNetCore.Html
 
 @model Public.Pages.cp.IndexModel
 
@@ -6,92 +7,173 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.SitePages[0].Title)
-            </th>
-           
-            <th>
-                @Html.DisplayNameFor(model => model.SitePages[0].TimesVisited)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SitePages[0].Project)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="text-center">
+    <div class="row">
+
         @foreach (var item in Model.SitePages)
         {
-            <tr>
-                <td>
+            <div class="col-2">
+                <div class="card mini-card">
                     <a href="?pageid=@item.ID">
                         @Html.DisplayFor(modelItem => item.Title)
                     </a>
-                </td>
-                
-                
-                <td>
-                    @Html.DisplayFor(modelItem => item.TimesVisited)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Project.ID)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+
+        <div class="col-2">
+            <div class="card mini-card dashed-border">
+                <a asp-page="Create">New Page</a>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
+
 
 <script>
-      tinymce.init({
-        selector: '#mytextarea'
-      });
-
+   
     tinymce.init({
-        selector: '#myeditable-h1',
-        inline: true,
+        selector: '.myeditablediv',
+        plugins: [
+            'autolink',
+            'codesample',
+            'link',
+            'lists',
+            'media',
+            'powerpaste',
+            'table',
+            'image',
+            'quickbars',
+            'codesample',
+            'help'
+            //'textcolor'
+        ],
+        quickbars_selection_toolbar: 'bold italic | formatselect | quicklink | blockquote forecolor backcolor',
+        toolbar: true,
         menubar: false,
-        toolbar: 'undo redo'
+        inline: true,
+        height: 200
     });
+
+    //tinymce.init({
+    //    selector: '#myeditable-h1',
+    //    inline: true,
+    //    menubar: false,
+    //    toolbar: 'undo redo'
+    //});
 
 </script>
 
 
-@if(Model.PageId != 0)
+@if (Model.PageId != 0)
 {
 
 
-<div class="row">
+    <div>
 
 
-    <div class="col-6">
-        <h1>Welcome to Edit Mode</h1>
-       
-        <form method="post">
-            <textarea asp-for="TextBlock" id="mytextarea">@Model.TextBlock</textarea>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-    <div class="col-6">
+        <div>
 
-        <h1>Preview</h1>
-        <div id="wrap">
-            <iframe id="scaled-frame" src="/display/@Model.CurrentProject.ProjectNameRoute?pageid=@Model.PageId" title="Homepage" height="600" width="800" ; target="/"></iframe>
+            <button onclick="document.editorForm.submit()">Save Changes</button>
+            <form method="post" id="editorForm" name="editorForm">
+                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId">Add component</button>
+                @foreach (var comp in Model.PageComponents)
+                {
+                    <div class="row" id=@("Row" + @comp.ID)>
+                        <div class="col-1"><button style="display:none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID">Background color:</button><input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" /></div>
+                        <div class="myeditablediv col-7" style="background-color:@comp.BgColor" border:1px solid; padding:5px;" id=@("TextBlock" + @comp.ID)>@(new HtmlString(comp.Content)) </div>
+                        <div class="col-1">
+                            <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId">Remove</button>
+                            <!--img src="~/deleteicon.png" width="50" onclick="removeComponent('@("Row" + @comp.ID)')" /-->
+                        </div>
+                        @if (comp.DisplayOrder != 0)
+                        {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveUp" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">Move Up</button></div>}
+                        else
+                        {<div class="col-1"><button disabled class="btn btn-primary disabled">Move Up</button></div>}
+
+                        @if (comp.DisplayOrder != Model.PageComponents.Count - 1)
+                        {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">Move Down</button></div>}
+                        else
+                        {<div class="col-1"><button disabled class="btn btn-primary disabled">Move Down</button></div>}
+                    </div>
+                }
+
+            </form>
         </div>
 
+
     </div>
 
-</div>
+    <script>
+        function enable(id) {
+
+            let colorPickers = document.querySelectorAll(".colorpicker");
+            colorPickers.forEach(item => {
+                item.setAttribute("disabled", true);
+
+            });            
+            document.getElementById(id).removeAttribute("disabled");
+        }
+            
+        function changeColor(id) {
+            console.log("Change color for " + id);
+            let btn = document.getElementById(id);
+            btn.click();
+            
+        }
+
+        function addComponent() {
+            let list = document.getElementById("editorForm");
+            let count = document.getElementById("editorForm").children.length;
+            let id = "TextBlock" + (count + 1);
+
+
+
+
+            let node = document.createElement("div");
+            node.innerHTML = id;
+            node.id = id;
+
+            list.appendChild(node);
+
+
+            tinymce.init({
+                selector: "#" + id,
+                plugins: [
+                    'autolink',
+                    'codesample',
+                    'link',
+                    'lists',
+                    'media',
+                    'powerpaste',
+                    'table',
+                    'image',
+                    'quickbars',
+                    'codesample',
+                    'help'
+                ],
+                quickbars_selection_toolbar: 'bold italic | formatselect | quicklink | blockquote',
+                toolbar: true,
+                menubar: false,
+                inline: true,
+                height: 200
+            });
+            //console.log(list);
+            //console.log(count);
+        }
+        function removeComponent(id) {
+            console.log("remove " + id)
+            document.getElementById(id).remove();
+        }
+
+
+    </script>
 }

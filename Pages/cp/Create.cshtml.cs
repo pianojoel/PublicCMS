@@ -41,7 +41,7 @@ namespace Public.Pages.cp
             CurrentProject = _context.Projects.Find(id);
             SitePage.TimesVisited = 0;
             SitePage.ProjectID = CurrentProject.ID;
-            SitePage.PageBody = "Hello World!";
+            //SitePage.PageBody = "Hello World!";
             _context.SitePage.Add(SitePage);
 
 

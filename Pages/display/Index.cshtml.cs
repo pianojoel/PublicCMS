@@ -19,6 +19,7 @@ namespace Public.Pages.display
         [BindProperty(SupportsGet=true)]
         public int PageId { get; set; }
         public SitePage CurrentPage { get; set; }
+        public List<PageComponent> PageComponents { get; set; }
 
 
         public IndexModel(PublicContext ctx)
@@ -27,7 +28,7 @@ namespace Public.Pages.display
         }
         public void OnGet()
         {
-            var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
+             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _ctx.Projects.Include(p => p.Pages).FirstOrDefault(p => p.ID == id);
             
             if(PageId == 0)
@@ -36,7 +37,8 @@ namespace Public.Pages.display
             }
             if(PageId != 0)
             {
-                CurrentPage = _ctx.SitePage.Find(PageId);
+                CurrentPage = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(p => p.ID == PageId);
+                   
             }
 
            

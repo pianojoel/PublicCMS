@@ -1,25 +1,30 @@
 ﻿@page "{projectname}"
 @model Public.Pages.display.IndexModel
 @using Microsoft.AspNetCore.Html
-@{
+@{ 
+    Layout = "_DisplayLayout";
 }
 
 @if (Model.CurrentPage == null)
 {
-   
 
-    
+
+
 
 
 }
 else
 {
-    <p>Page id is @Model.PageId</p>
+
     <div>
-        
-            @(new HtmlString(Model.CurrentPage.PageBody))
-        
+        @foreach(var comp in Model.CurrentPage.PageComponents)
+                {
+
+        @(new HtmlString(comp.Content))
+                }
+
     </div>
     //Html.Raw(Model.CurrentPage.PageBody);
+    
 }
 
