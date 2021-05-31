@@ -1,5 +1,6 @@
 ﻿@page "{projectname?}/{id?}"
 @using Microsoft.AspNetCore.Html
+@using Models
 
 @model Public.Pages.cp.IndexModel
 
@@ -39,7 +40,7 @@
 
 
 <script>
-   
+
     tinymce.init({
         selector: '.myeditablediv',
         plugins: [
@@ -60,7 +61,23 @@
         toolbar: true,
         menubar: false,
         inline: true,
-        height: 200
+        height: 200,
+
+        setup: function (editor) {
+            editor.on('blur', function (e) {
+
+                let id = $(this).attr("id");
+                console.log(id);
+                //document.editorForm.submit();
+                document.getElementById("b" + id).click();
+            });
+        }
+
+
+        //setup: function (editor) {
+        //tinymce.on('deactivate'), function() {
+        //    document.editorForm.submit();
+        //}
     });
 
     //tinymce.init({
@@ -82,52 +99,94 @@
 
         <div>
 
-            <button onclick="document.editorForm.submit()">Save Changes</button>
-            <form method="post" id="editorForm" name="editorForm">
-                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId">Add component</button>
+            @*<button onclick="document.editorForm.submit()">Save Changes</button>*@
+            <form method="post" id="editorForm" name="editorForm" enctype="multipart/form-data">
+
                 @foreach (var comp in Model.PageComponents)
                 {
                     <div class="row" id=@("Row" + @comp.ID)>
-                        <div class="col-1"><button style="display:none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID">Background color:</button><input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" /></div>
-                        <div class="myeditablediv col-7" style="background-color:@comp.BgColor" border:1px solid; padding:5px;" id=@("TextBlock" + @comp.ID)>@(new HtmlString(comp.Content)) </div>
                         <div class="col-1">
-                            <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId">Remove</button>
-                            <!--img src="~/deleteicon.png" width="50" onclick="removeComponent('@("Row" + @comp.ID)')" /-->
+                            <button style="display:none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
+                            <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" />
+                        </div>
+                        @if (comp.ComponentType == "text")
+                        {
+                            <div class="myeditablediv col-7" style="background-color:@comp.BgColor" border:1px solid; padding:5px;" id=@(@comp.ID)>@(new HtmlString(comp.Content)) </div>
+                        }
+                        else if (comp.ComponentType == "image")
+                        {
+                            @if (comp.ImageURL == null)
+                            {
+
+                    <div class="col-7">
+                        <input asp-for="UploadedImage" value="Image File" /><button asp-page-handler="SetImage" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId">Set Image</button>
+                    </div>
+
+
+                            }
+                            else
+                            {
+                            <div class="col-7" style="background-color:@comp.BgColor" border:1px solid; padding:5px;" id=@(@comp.ID)><img src="~/img/@comp.ImageURL" class="w-100" /> </div>
+                            }
+                        }
+                        <div class="col-1">
+                            <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId"><img src="~/deleteicon.png" width="25"></button>
+
                         </div>
                         @if (comp.DisplayOrder != 0)
-                        {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveUp" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">Move Up</button></div>}
+                        {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveUp" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&uarr;</button></div>}
                         else
-                        {<div class="col-1"><button disabled class="btn btn-primary disabled">Move Up</button></div>}
+                        {<div class="col-1"><button disabled class="btn btn-primary disabled">&uarr;</button></div>}
 
                         @if (comp.DisplayOrder != Model.PageComponents.Count - 1)
-                        {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">Move Down</button></div>}
+                        {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&darr;</button></div>}
                         else
-                        {<div class="col-1"><button disabled class="btn btn-primary disabled">Move Down</button></div>}
+                        {<div class="col-1"><button disabled class="btn btn-primary disabled">&darr;</button></div>}
+                        <button class="d-none" id="@("b" + comp.ID)" asp-page-handler="SaveComponent" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId"></button>
                     </div>
                 }
-
+                <div class="row">
+                    <div class="col-1 w-100"></div>
+                    <div class="col-7">
+                        <div class="dropdown">
+                            <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="text">Add text component</button>
+                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="image">Add Image</button>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4"></div>
+                </div>
             </form>
+
         </div>
 
 
     </div>
-
+    
     <script>
+
+       
+
+
+
         function enable(id) {
 
             let colorPickers = document.querySelectorAll(".colorpicker");
             colorPickers.forEach(item => {
                 item.setAttribute("disabled", true);
 
-            });            
+            });
             document.getElementById(id).removeAttribute("disabled");
         }
-            
+
         function changeColor(id) {
             console.log("Change color for " + id);
             let btn = document.getElementById(id);
             btn.click();
-            
+
         }
 
         function addComponent() {
@@ -174,6 +233,7 @@
             document.getElementById(id).remove();
         }
 
-
+       
+       
     </script>
 }

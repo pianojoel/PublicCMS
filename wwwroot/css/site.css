@@ -121,4 +121,7 @@ body {
     #scaled-frame {
         zoom: 1;
     }
+.newcomponent-button{
+    width:100%;
+    border:1px dashed;
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Public.Data;
 using Public.Models;
+using static Public.Models.Misc;
 
 namespace Public.Pages.cp
 {
@@ -28,7 +30,9 @@ namespace Public.Pages.cp
         {
             _ctx = ctx;
         }
-
+        public string ImageDescription { get; set; }
+        [BindProperty]
+        public IFormFile UploadedImage { get; set; }
         public IList<SitePage> SitePages { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
@@ -66,31 +70,31 @@ namespace Public.Pages.cp
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var results = HttpContext.Request.Form.ToList();
-            results = results.Where(r => r.Key != "__RequestVerificationToken" && r.Key != "BgColor").ToList(); //__RequestVerificationToken
+            //var results = HttpContext.Request.Form.ToList();
+            //results = results.Where(r => r.Key != "__RequestVerificationToken" && r.Key != "BgColor").ToList(); //__RequestVerificationToken
 
-             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
-            CurrentProject = _ctx.Projects.Find(id);
+            // var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
+            //CurrentProject = _ctx.Projects.Find(id);
 
-            SitePages = await _ctx.SitePage
-                .Include(s => s.Project)
-                .Where(p => p.ProjectID == CurrentProject.ID)
-                .ToListAsync();
-            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
-            p.PageComponents.Clear();
-            for (int i = 0; i < results.Count(); i++)
-            {
-                p.PageComponents.Add(new PageComponent
-                {
-                    Content = results[i].Value,
-                    DisplayOrder = i
+            //SitePages = await _ctx.SitePage
+            //    .Include(s => s.Project)
+            //    .Where(p => p.ProjectID == CurrentProject.ID)
+            //    .ToListAsync();
+            //var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+            //p.PageComponents.Clear();
+            //for (int i = 0; i < results.Count(); i++)
+            //{
+            //    p.PageComponents.Add(new PageComponent
+            //    {
+            //        Content = results[i].Value,
+            //        DisplayOrder = i
                     
-                });
-            }
+            //    });
+            //}
 
             
 
-            await _ctx.SaveChangesAsync();
+            //await _ctx.SaveChangesAsync();
 
             return Redirect("?pageid=" + PageId);
         }
@@ -149,7 +153,7 @@ namespace Public.Pages.cp
             return Redirect("?pageid=" + PageId);
         }
 
-        public async Task<IActionResult> OnPostAddComponentAsync(int deleteid)
+        public async Task<IActionResult> OnPostAddComponentAsync(string compType)
         {
             var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
 
@@ -160,7 +164,8 @@ namespace Public.Pages.cp
                 p.PageComponents.Add(new PageComponent
                 {
                     DisplayOrder = 0,
-                    Content = "I'm number one"
+                    Content = compType == "text" ? "I'm text" : compType == "image" ? "<a data-toggle=\"modal\" data-target=\"#exampleModalCenter\">Add Image</a>" : "Other type",
+                    ComponentType = compType
                 });
             }
             else
@@ -171,7 +176,8 @@ namespace Public.Pages.cp
             {
                 
                 DisplayOrder = p.PageComponents.Max(pc => pc.DisplayOrder) + 1,
-                Content = "do " + p.PageComponents.Max(pc => pc.DisplayOrder) + 1
+                Content = compType == "text" ? "I'm text" : compType == "image" ? "<a data-toggle=\"modal\" data-val=\"user1\" data-target=\"#exampleModalCenter\">Add Image</a>" : "Other type",
+                ComponentType = compType
             });
             }
 
@@ -197,6 +203,44 @@ namespace Public.Pages.cp
 
 
         }
+
+        public async Task<IActionResult> OnPostSaveComponentAsync(int compid)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+
+            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+
+            var results = HttpContext.Request.Form.ToList();
+
+            var newpc = results.FirstOrDefault(r => r.Key == ""+compid);
+            pc.Content = newpc.Value;
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+
+
+        }
+
+        public async Task<IActionResult> OnPostSetImageAsync(int compid)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+
+            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+            if (UploadedImage != null)
+            {
+                var file = "./wwwroot/img/" + UploadedImage.FileName;
+                using (var fileStream = new FileStream(file, FileMode.Create))
+                {
+                    await UploadedImage.CopyToAsync(fileStream);
+                }
+            }
+            pc.ImageURL = UploadedImage != null ? UploadedImage.FileName : "";
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+        }  
 
     }
 }
