@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Http.Features
+
+@{
+    var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
+    var showBanner = !consentFeature?.CanTrack ?? false;
+    var cookieString = consentFeature?.CreateConsentCookie();
+}
+
+@if (showBanner)
+{
+    <div id="cookieConsent" class="row alert alert-info alert-dismissible fade show" role="alert">
+        <div class="col-10">
+            Den här sidan använder Cookies. Om det är okej, klicka på Acceptera. <a asp-page="/Privacy">Läs mer</a>.
+        </div>
+        <div class="col-2">
+            <button type="button" class="accept-policy close p-0" data-dismiss="alert" aria-label="Acceptera" data-cookie-string="@cookieString">
+                <span aria-hidden="true">Acceptera</span>
+            </button>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var button = document.querySelector("#cookieConsent button[data-cookie-string]");
+            button.addEventListener("click", function (event) {
+                document.cookie = button.dataset.cookieString;
+            }, false);
+        })();
+    </script>
+}
