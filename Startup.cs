@@ -37,8 +37,8 @@ namespace Public
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSession();
             services.AddRazorPages();
-            
 
+            services.AddControllers();
             services.AddDbContext<PublicContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PublicContext")));
             services.AddScoped<PublicContext>();
@@ -78,6 +78,7 @@ namespace Public
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
