@@ -1,0 +1,28 @@
+﻿
+
+@code {
+    [Parameter]
+    public string LinkURL { get; set; }
+    [Parameter]
+    public string LinkText { get; set; }
+    [Parameter]
+    public int CompId { get; set; }
+    [Parameter]
+    public int PageId { get; set; }
+}
+
+@if (LinkURL != null)
+{
+<div class="col-7" id="@CompId">
+    <a href=@LinkURL>@LinkText</a>
+</div>
+}
+else
+{
+<div class="col-7">
+    <input class="linkInput @("link"+CompId)" type="text" name="LinkURL" placeholder="http://" onkeydown="handle(event, @CompId)" />
+    <input class="linkInput @("link"+CompId)" type="text" name="LinkText" placeholder="Link text" onkeydown="handle(event, @CompId)"/>
+    <button id="@("btn"+CompId)" formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@LinkURL&LinkText=@LinkText" onclick="enableLinkInput('@("link"+CompId)')">Set Link</button>
+</div>
+    //formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@LinkURL&LinkText=@LinkText"
+}

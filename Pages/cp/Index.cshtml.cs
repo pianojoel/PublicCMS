@@ -17,6 +17,10 @@ namespace Public.Pages.cp
     {
         private readonly Public.Data.PublicContext _ctx;
 
+        //[BindProperty]
+        //public string LinkURL { get; set; }
+        //[BindProperty]
+        //public string LinkText { get; set; }
         public Project CurrentProject { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageId { get; set; }
@@ -157,32 +161,20 @@ namespace Public.Pages.cp
         {
             var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
 
+            PageComponent comp = new PageComponent();
 
-
-            if(p.PageComponents.Count() == 0)
+            if (p.PageComponents.Count() == 0)
             {
-                p.PageComponents.Add(new PageComponent
-                {
-                    DisplayOrder = 0,
-                    Content = compType == "text" ? "I'm text" : compType == "image" ? "<a data-toggle=\"modal\" data-target=\"#exampleModalCenter\">Add Image</a>" : "Other type",
-                    ComponentType = compType
-                });
+                comp.DisplayOrder = 0;               
             }
             else
             {
-
-            
-            p.PageComponents.Add(new PageComponent
-            {
-                
-                DisplayOrder = p.PageComponents.Max(pc => pc.DisplayOrder) + 1,
-                Content = compType == "text" ? "I'm text" : compType == "image" ? "<a data-toggle=\"modal\" data-val=\"user1\" data-target=\"#exampleModalCenter\">Add Image</a>" : "Other type",
-                ComponentType = compType
-            });
+                comp.DisplayOrder = p.PageComponents.Max(pc => pc.DisplayOrder) + 1;
             }
 
+            comp.ComponentType = compType;
 
-
+            p.PageComponents.Add(comp);
 
             await _ctx.SaveChangesAsync();
 
@@ -241,6 +233,18 @@ namespace Public.Pages.cp
 
             return Redirect("?pageid=" + PageId);
         }  
+
+        public async Task<IActionResult> OnPostSetLinkAsync(int compid, string LinkURL, string LinkText)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+
+            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+
+            pc.LinkURL = LinkURL;
+            pc.LinkText = LinkText;
+            await _ctx.SaveChangesAsync();
+            return Redirect("?pageid=" + PageId);
+        }
 
     }
 }

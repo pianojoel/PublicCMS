@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Html
+@using Public.Models
+
+@code 
+{
+    [Parameter]
+    public PageComponent myComp { get; set; }
+    
+
+}
+<div class="myeditablediv col-7" id=@(myComp.ID)>@(new MarkupString(myComp.Content)) </div>
