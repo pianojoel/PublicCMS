@@ -4,8 +4,8 @@
 @code 
 {
     [Parameter]
-    public PageComponent myComp { get; set; }
+    public PageComponent Comp { get; set; }
     
 
 }
-<div class="myeditablediv col-7" id=@(myComp.ID)>@(new MarkupString(myComp.Content)) </div>
+<div class="myeditablediv col-7" id=@(Comp.ID)>@(new MarkupString(Comp.Content)) </div>

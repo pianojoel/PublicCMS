@@ -151,9 +151,7 @@
                     </div>
                     @if (comp.ComponentType == "text")
                     {
-                        @*<div class="myeditablediv col-7" id=@(@comp.ID)>@(new HtmlString(comp.Content)) </div>*@
-
-                        <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-mycomp="@comp"/>
+                        <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Comp="@comp" />
                     }
                     else if (comp.ComponentType == "link")
                     {
@@ -164,6 +162,12 @@
                     {
                         <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-HeaderText="@comp.Content" param-CompId="comp.ID" />
                     }
+                    else if (comp.ComponentType == "columns")
+                    {
+                        <component type="typeof(Components.ColumnsComponent)" render-mode="ServerPrerendered" param-Comp="@comp" param-PageId="@Model.PageId" />
+                    }
+
+
                     else if (comp.ComponentType == "image")
                     {
                         @if (comp.ImageURL == null)
@@ -201,7 +205,7 @@
                     <div class="col-1 w-100"></div>
                     <div class="col-7">
                         <div class="dropdown">
-                            <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
+                            <button  class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="text">Add text component</button>
                                 <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="image">Add Image</button>

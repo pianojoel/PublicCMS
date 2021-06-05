@@ -1,0 +1,81 @@
+﻿@using Public.Models
+
+@code {
+    [Parameter]
+    public PageComponent Comp { get; set; }
+    [Parameter]
+    public int PageId { get; set; }
+}
+
+<div class="col-7">
+    <div class="row">
+
+        @if (Comp.Columns != null)
+        {
+            @foreach (var column in Comp.Columns)
+            {
+                if (column.ComponentType == null)
+                {
+
+
+                    <div class="col">
+                        
+                        <div class="dropdown">
+                            <button asp-page-handler="AddComponent" class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <button formaction="?handler=SetColumnCompType&comptype=text&compid=@(Comp.ID)&PageId=@PageId&displayorder=@column.DisplayOrder" class="dropdown-item">Add text component</button>
+                                <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="image">Add Image</button>
+                                <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="link">Add Link</button>
+                                <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="header">Add Header</button>
+                                <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="columns">Add Columns</button>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+
+
+    <div class="col">
+        @switch (column.ComponentType)
+        {
+            case "text":
+                <div class="myeditablediv" id=@column.ID )>@(new MarkupString(column.Content)) </div>
+                <button class="d-none" id="@("b" + column.ID)" formaction="?handler=SaveColumnComp&column=@column.ID&compid=@Comp.ID&pageid=@PageId"></button>
+                break;
+            case "image":
+
+                
+                    @if (column.ImageURL == null)
+                    {
+
+                        <div>
+                            <input name="UploadedImage" value="Image File" /><button formaction="?handler=SetImage&compid=@Comp.ID"&pageid=@PageId&column=@column.ID>Set Image</button>
+                        </div>
+
+
+                    }
+
+                    else
+                    {
+                        <div id=@(@comp.ID)><img src="~/img/@comp.ImageURL" class="w-100" /> </div>
+                    }
+
+                    break;
+case "link":
+                break;
+            case "header":
+                break;
+
+
+        }
+
+
+    </div>
+                }
+            }
+        }
+    </div>
+
+</div>

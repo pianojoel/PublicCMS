@@ -62,12 +62,13 @@ namespace Public.Pages.cp
             {
 
 
-                var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+                var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc =>pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+                
                 if (p.PageComponents != null)
                 {
                     PageComponents = p.PageComponents.OrderBy(pc => pc.DisplayOrder).ToList();
 
-                }
+                 }
             }
             return Page();
         }
@@ -171,9 +172,15 @@ namespace Public.Pages.cp
             {
                 comp.DisplayOrder = p.PageComponents.Max(pc => pc.DisplayOrder) + 1;
             }
-
+            
             comp.ComponentType = compType;
+            if(comp.ComponentType == "columns")
+            {
+                comp.Columns = new();
+                comp.Columns.Add(new ColumnComp(0));
+                comp.Columns.Add(new ColumnComp(1));
 
+            }
             p.PageComponents.Add(comp);
 
             await _ctx.SaveChangesAsync();
@@ -213,6 +220,25 @@ namespace Public.Pages.cp
 
 
         }
+        public async Task<IActionResult> OnPostSaveColumnCompAsync(int compid, int column)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+
+            var cc = pc.Columns.FirstOrDefault(c => c.ID == column);
+
+            var results = HttpContext.Request.Form.ToList();
+
+            var newpc = results.FirstOrDefault(r => r.Key == "" + column);
+            cc.Content = newpc.Value;
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+
+
+        }
 
         public async Task<IActionResult> OnPostSetImageAsync(int compid)
         {
@@ -243,6 +269,18 @@ namespace Public.Pages.cp
             pc.LinkURL = LinkURL;
             pc.LinkText = LinkText;
             await _ctx.SaveChangesAsync();
+            return Redirect("?pageid=" + PageId);
+        }
+
+        public async Task<IActionResult> OnPostSetColumnCompTypeAsync(int compid, string comptype, int displayOrder)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+
+            cc.ComponentType = comptype;
+            await _ctx.SaveChangesAsync();
+
             return Redirect("?pageid=" + PageId);
         }
 
