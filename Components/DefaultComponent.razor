@@ -1,0 +1,28 @@
+﻿@using Public.Models
+
+@code {
+    [Parameter]
+    public PageComponent Comp { get; set; }
+    [Parameter]
+    public ColumnComp Column { get; set; } 
+    [Parameter]
+    public int PageId { get; set; }
+}
+
+ 
+
+            <div class="dropdown">
+                <button asp-page-handler="AddComponent" class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <button formaction="?handler=SetColumnCompType&comptype=text&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add text component</button>
+                    <button formaction="?handler=SetColumnCompType&comptype=image&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add image</button>
+                    <button formaction="?handler=SetColumnCompType&comptype=header&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add header</button>
+                    <button formaction="?handler=SetColumnCompType&comptype=link&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add link</button>
+                    @*<button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="image">Add Image</button>
+        <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="link">Add Link</button>
+        <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="header">Add Header</button>
+        <button asp-page-handler="AddComponent" class="dropdown-item" asp-route-comptype="columns">Add Columns</button>*@
+
+                </div>
+            </div>
+            

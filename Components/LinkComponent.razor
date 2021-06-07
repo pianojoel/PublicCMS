@@ -1,28 +1,26 @@
-﻿
+﻿@using Public.Models
 
 @code {
     [Parameter]
-    public string LinkURL { get; set; }
-    [Parameter]
-    public string LinkText { get; set; }
+    public ColumnComp Column { get; set; }
     [Parameter]
     public int CompId { get; set; }
     [Parameter]
     public int PageId { get; set; }
 }
 
-@if (LinkURL != null)
+@if (Column.LinkURL != null)
 {
-<div class="col-7" id="@CompId">
-    <a href=@LinkURL>@LinkText</a>
+<div id="@CompId">
+    <a href=@Column.LinkURL>@Column.LinkText</a>
 </div>
 }
 else
 {
-<div class="col-7">
+<div>
     <input class="linkInput @("link"+CompId)" type="text" name="LinkURL" placeholder="http://" onkeydown="handle(event, @CompId)" />
     <input class="linkInput @("link"+CompId)" type="text" name="LinkText" placeholder="Link text" onkeydown="handle(event, @CompId)"/>
-    <button id="@("btn"+CompId)" formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@LinkURL&LinkText=@LinkText" onclick="enableLinkInput('@("link"+CompId)')">Set Link</button>
+    <button id="@("btn"+CompId)" formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@Column.LinkURL&LinkText=@Column.LinkText&displayorder=@Column.DisplayOrder" onclick="enableLinkInput('@("link"+CompId)')">Set Link</button>
 </div>
     //formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@LinkURL&LinkText=@LinkText"
 }

@@ -21,10 +21,13 @@ namespace Public.Models
         public int PageComponentID { get; set; }
         [JsonIgnore]
         public PageComponent PageComponent { get; set; }
-
+        public ColumnComp() { }
+       
         public ColumnComp(int displayOrder)
         {
+            ComponentType = "default";
             DisplayOrder = displayOrder;
+
         }
     }
 }

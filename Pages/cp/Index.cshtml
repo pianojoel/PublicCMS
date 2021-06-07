@@ -68,35 +68,32 @@
 
                 let id = $(this).attr("id");
                 console.log(id);
-                //document.editorForm.submit();
+               
                 document.getElementById("b" + id).click();
             });
         }
 
 
-        //setup: function (editor) {
-        //tinymce.on('deactivate'), function() {
-        //    document.editorForm.submit();
-        //}
+       
     });
 
     tinymce.init({
         selector: '.myeditablediv-header',
         plugins: [
             'autolink',
-            
+
             'link',
-           
-            
-            
-            
-            
-            
-            
+
+
+
+
+
+
+
         ],
         //quickbars_selection_toolbar: 'bold italic | formatselect | forecolor backcolor',
         block_formats: 'Large=h1; Medium=h3; Small=h6',
-        
+
         toolbar: 'undo redo | bold italic underline',
         menubar: false,
         inline: true,
@@ -107,7 +104,7 @@
 
                 let id = $(this).attr("id");
                 console.log(id);
-                //document.editorForm.submit();
+               
                 document.getElementById("b" + id).click();
             });
         }
@@ -149,42 +146,46 @@
                         <button style="display:none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
                         <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" />
                     </div>
-                    @if (comp.ComponentType == "text")
-                    {
-                        <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Comp="@comp" />
-                    }
-                    else if (comp.ComponentType == "link")
-                    {
-                        <component type="typeof(Components.LinkComponent)" render-mode="Static" param-LinkURL="@comp.LinkURL" param-LinkText="@comp.LinkText" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                    }
-
-                    else if (comp.ComponentType == "header")
-                    {
-                        <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-HeaderText="@comp.Content" param-CompId="comp.ID" />
-                    }
-                    else if (comp.ComponentType == "columns")
-                    {
-                        <component type="typeof(Components.ColumnsComponent)" render-mode="ServerPrerendered" param-Comp="@comp" param-PageId="@Model.PageId" />
-                    }
+                    <div class="col-1">
+                        <button asp-page-handler="AddColumn" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId">Add Column</button>
+                    </div>
 
 
-                    else if (comp.ComponentType == "image")
-                    {
-                        @if (comp.ImageURL == null)
-                        {
 
-                            <div class="col-7">
-                                <input asp-for="UploadedImage" value="Image File" /><button asp-page-handler="SetImage" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId">Set Image</button>
+
+                    <div class="col-6">
+                        <div class="row">
+                            @foreach (var column in comp.Columns)
+                            {
+                            <div class="col">
+                                @if (column.ComponentType == "default")
+                                {
+                                    <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
+                                }
+                                else if (column.ComponentType == "text")
+                                {
+                                    <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Column="@column" />
+                                }
+                                else if (column.ComponentType == "link")
+                                {
+                                    <component type="typeof(Components.LinkComponent)" render-mode="Static" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                }
+
+                                else if (column.ComponentType == "header")
+                                {
+                                    <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-Column="@column" />
+                                }
+                                else if (column.ComponentType == "image")
+                                {
+                                    <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId"  />
+                                }
+                                <button class="d-none" id="@("b" + column.ID)" asp-page-handler="SaveColumnComp" asp-route-compid="@comp.ID" asp-route-column="@column.ID" asp-route-pageid="@Model.PageId"></button>
                             </div>
+                            }
+                        </div>
+                    </div>
 
-
-                        }
-
-                        else
-                        {
-                            <div class="col-7" id=@(@comp.ID)><img src="~/img/@comp.ImageURL" class="w-100" /> </div>
-                        }
-                    }
+                   
                     <div class="col-1">
                         <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId"><img src="~/deleteicon.png" width="25"></button>
 
@@ -198,23 +199,16 @@
                     {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&darr;</button></div>}
                     else
                     {<div class="col-1"><button disabled class="btn btn-primary disabled">&darr;</button></div>}
-                    <button class="d-none" id="@("b" + comp.ID)" asp-page-handler="SaveComponent" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId"></button>
+                    
                 </div>
                 }
                 <div class="row">
                     <div class="col-1 w-100"></div>
-                    <div class="col-7">
-                        <div class="dropdown">
-                            <button  class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="text">Add text component</button>
-                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="image">Add Image</button>
-                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="link">Add Link</button>
-                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="header">Add Header</button>
-                                <button asp-page-handler="AddComponent" asp-route-PageId="@Model.PageId" class="dropdown-item" asp-route-comptype="columns">Add Columns</button>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </div>
+                    <div class="col-6">
+                        
+                            <button asp-page-handler="AddComponent" asp-route-pageid="@Model.PageId" class="btn btn-secondary newcomponent-button" id="dropdownMenuButton">Add row</button>
+                            
+                       
                     </div>
                     <div class="col-4"></div>
                 </div>
@@ -224,7 +218,7 @@
 
 
     </div>
-    
+
     <script>
         function handle(e, id) {
             if (e.keyCode === 13) {
@@ -246,7 +240,7 @@
 
 
             });
-            let enableInputs = document.querySelectorAll("."+id);
+            let enableInputs = document.querySelectorAll("." + id);
             enableInputs.forEach(item => {
                 item.removeAttribute("disabled");
             })

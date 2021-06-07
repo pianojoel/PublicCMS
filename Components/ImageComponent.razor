@@ -1,0 +1,21 @@
+﻿@using Public.Models
+@code {
+    [Parameter]
+    public ColumnComp Column { get; set; }
+    [Parameter]
+    public int CompId { get; set; }
+    [Parameter]
+    public int PageId { get; set; }
+}
+
+@if (Column.ImageURL != null)
+{
+    <img src="/img/@Column.ImageURL" class="w-100" />
+
+}
+else
+{
+    <input type="file" name="UploadedImage" value="Image File" />
+    <button formaction="?handler=SetImage&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Image</button>
+
+}

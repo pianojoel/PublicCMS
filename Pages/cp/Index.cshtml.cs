@@ -158,7 +158,7 @@ namespace Public.Pages.cp
             return Redirect("?pageid=" + PageId);
         }
 
-        public async Task<IActionResult> OnPostAddComponentAsync(string compType)
+        public async Task<IActionResult> OnPostAddComponentAsync()
         {
             var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
 
@@ -171,22 +171,30 @@ namespace Public.Pages.cp
             else
             {
                 comp.DisplayOrder = p.PageComponents.Max(pc => pc.DisplayOrder) + 1;
-            }
-            
-            comp.ComponentType = compType;
-            if(comp.ComponentType == "columns")
-            {
+            }                                                
                 comp.Columns = new();
                 comp.Columns.Add(new ColumnComp(0));
-                comp.Columns.Add(new ColumnComp(1));
-
-            }
+                            
             p.PageComponents.Add(comp);
 
             await _ctx.SaveChangesAsync();
 
             return Redirect("?pageid=" + PageId);
         }
+        public async Task<IActionResult> OnPostAddColumnAsync(int compid)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+            var displayorder = pc.Columns.Count();
+            pc.Columns.Add(new ColumnComp(displayorder));
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+        }
+
+
 
         public async Task<IActionResult> OnPostChangeBgColorAsync(int compid)
         {
@@ -240,11 +248,12 @@ namespace Public.Pages.cp
 
         }
 
-        public async Task<IActionResult> OnPostSetImageAsync(int compid)
+        public async Task<IActionResult> OnPostSetImageAsync(int compid, int displayOrder)
         {
-            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
 
-            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+            
             if (UploadedImage != null)
             {
                 var file = "./wwwroot/img/" + UploadedImage.FileName;
@@ -253,21 +262,21 @@ namespace Public.Pages.cp
                     await UploadedImage.CopyToAsync(fileStream);
                 }
             }
-            pc.ImageURL = UploadedImage != null ? UploadedImage.FileName : "";
+            cc.ImageURL = UploadedImage != null ? UploadedImage.FileName : "";
 
             await _ctx.SaveChangesAsync();
 
             return Redirect("?pageid=" + PageId);
         }  
 
-        public async Task<IActionResult> OnPostSetLinkAsync(int compid, string LinkURL, string LinkText)
+        public async Task<IActionResult> OnPostSetLinkAsync(int compid, string LinkURL, string LinkText, int displayOrder)
         {
-            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
 
-            var pc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid);
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
 
-            pc.LinkURL = LinkURL;
-            pc.LinkText = LinkText;
+            cc.LinkURL = LinkURL;
+            cc.LinkText = LinkText;
             await _ctx.SaveChangesAsync();
             return Redirect("?pageid=" + PageId);
         }
