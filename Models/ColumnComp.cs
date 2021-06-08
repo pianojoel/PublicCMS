@@ -17,6 +17,7 @@ namespace Public.Models
         public string ImageURL { get; set; }
         public string LinkURL { get; set; }
         public string LinkText { get; set; }
+        
 
         public int PageComponentID { get; set; }
         [JsonIgnore]

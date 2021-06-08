@@ -1,0 +1,91 @@
+﻿@page "{projectname?}"
+@model Public.Pages.cp.ProjectSettingsModel
+@{
+}
+<form method="post">
+    <p>Enable menu</p>
+    <label class="switch">
+        <input onChange="this.form.submit()" asp-for="EnableMenu" type="checkbox" value="true">
+       
+        <span class="slider round"></span>
+    </label>
+    </form>
+
+
+@if (Model.EnableMenu)
+{
+    <div>
+        <form method="post">
+            <div>
+                <h6>Select menu layout:</h6>
+                <input type="radio" asp-for="Menutype" value="h">
+                <label>Horizontal</label>
+                <input type="radio" asp-for="Menutype" value="vl">
+                <label>Vertical left</label>
+                <input type="radio" asp-for="Menutype" value="vr">
+                <label>Vertical right</label>
+                <button class="btn btn-primary" asp-page-handler="SetLayout">Set</button>
+            </div>
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th>Text</th>
+                        <th>URL</th>
+                        <th>Displayorder</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @foreach (var menuItem in Model.MenuItems)
+                    {
+                        <tr>
+                            <td>@menuItem.Text</td>
+                            <td>@menuItem.TargetURL</td>
+                            <td>@menuItem.DisplayOrder</td>
+                            <td>
+                                <button class="btn btn-primary" asp-page-handler="DeleteItem" asp-route-deleteid="@menuItem.ID"><img src="~/deleteicon.png" width="20" /></button>
+                                @if (menuItem.DisplayOrder != 0)
+                                {<button class="btn btn-primary" asp-page-handler="MoveUp" asp-route-id="@menuItem.ID">&uarr;</button>}
+                                else
+                                {<button disabled class="btn btn-primary disabled">&uarr;</button>}
+
+
+
+                                @if (menuItem.DisplayOrder < Model.MenuItems.Count() - 1)
+                                {<button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-id="@menuItem.ID">&darr;</button>}
+                                else
+                                { <button disabled class="btn btn-primary disabled">&darr;</button>}
+
+                            </td>
+                        </tr>
+                    }
+
+                    <tr>
+                    </tr>
+
+                </tbody>
+
+            </table>
+        </form>
+
+<form method="post">
+    <div class="form-group">
+        <label for="NewItemText">Menu text</label>
+        <input type="text" asp-for="NewItemText" />
+        <span asp-validation-for="NewItemText" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="NewItemURL">Link URL </label>
+        <input type="text" asp-for="NewItemURL" />
+        <span asp-validation-for="NewItemURL" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary" asp-page-handler="CreateItem" type="submit">Add Menu Item</button>
+
+</form>
+</div>
+}
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

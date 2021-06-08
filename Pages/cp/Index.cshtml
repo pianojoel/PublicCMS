@@ -133,10 +133,10 @@
 
     <div>
 
-
+        <a href="/cp/projectsettings">project settings</a>
         <div>
 
-            @*<button onclick="document.editorForm.submit()">Save Changes</button>*@
+           
             <form method="post" id="editorForm" name="editorForm" enctype="multipart/form-data">
 
                 @foreach (var comp in Model.PageComponents)
@@ -146,15 +146,19 @@
                         <button style="display:none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
                         <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" />
                     </div>
+                    
                     <div class="col-1">
                         <button asp-page-handler="AddColumn" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId">Add Column</button>
                     </div>
-
+                   
 
 
 
                     <div class="col-6">
                         <div class="row">
+                            
+
+
                             @foreach (var column in comp.Columns)
                             {
                             <div class="col">
@@ -177,8 +181,9 @@
                                 }
                                 else if (column.ComponentType == "image")
                                 {
-                                    <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId"  />
+                                    <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
                                 }
+                                  
                                 <button class="d-none" id="@("b" + column.ID)" asp-page-handler="SaveColumnComp" asp-route-compid="@comp.ID" asp-route-column="@column.ID" asp-route-pageid="@Model.PageId"></button>
                             </div>
                             }

@@ -73,7 +73,25 @@ namespace Public.Pages
                 Title = "Index",
 
             };
+            SitePage privacy = new()
+            {
+                IsIndex = false,
+                Title = "Privacy"
+            };
+            SitePage about = new()
+            {
+                IsIndex = false,
+                Title = "About"
+            };
             Project.Pages.Add(index);
+            Project.Pages.Add(privacy);
+            Project.Pages.Add(about);
+            Project.MenuItems = new();
+            Project.MenuItems.Add(new MenuItem("/index", "Home", 0));
+            Project.MenuItems.Add(new MenuItem("/privacy", "Privacy", 1));
+            Project.MenuItems.Add(new MenuItem("/about", "About", 2));
+            Project.MenuType = "h";
+
             _ctx.Projects.Add(Project);
             await _ctx.SaveChangesAsync();
 

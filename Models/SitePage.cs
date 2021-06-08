@@ -9,7 +9,7 @@ namespace Public.Models
     {
         public int ID { get; set; }
         public string Title { get; set; }
-        public ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
+        
         public List<PageComponent> PageComponents { get; set; }
         public bool IsIndex { get; set; }
         public string ImageURL { get; set; }
