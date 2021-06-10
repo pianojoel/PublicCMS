@@ -92,6 +92,8 @@ namespace Public.Pages
             Project.MenuItems.Add(new MenuItem("/about", "About", 2));
             Project.MenuType = "h";
 
+            Project.FooterContent = "(c) " + DateTime.Now.Year + " " + Project.OwnerName;  
+
             _ctx.Projects.Add(Project);
             await _ctx.SaveChangesAsync();
 
@@ -113,6 +115,37 @@ namespace Public.Pages
             HttpContext.Session.SetString("CurrentProjectID", $"{ID}");
 
             return Redirect("/display/" + CurrentProject.ProjectNameRoute);
+        }
+
+        public async Task<IActionResult> OnPostDeleteProjectAsync(int deleteID)
+        {
+            
+            CurrentProject = _ctx.Projects
+                .Include(p => p.Pages)
+                .ThenInclude(p => p.PageComponents)
+                .ThenInclude(pc => pc.Columns)
+                .FirstOrDefault(p => p.ID == deleteID);
+
+            if (!String.IsNullOrEmpty(CurrentProject.CoverImageURL))
+            {
+                System.IO.File.Delete(CurrentProject.CoverImageURL);
+            }
+            foreach(var sp in CurrentProject.Pages)
+            {
+                foreach(var pc in sp.PageComponents)
+                {
+                    foreach(var cc in pc.Columns)
+                    {
+                        if (!String.IsNullOrEmpty(cc.ImageURL))
+                        {
+                            System.IO.File.Delete(cc.ImageURL);
+                        }
+                    }
+                }
+            }
+            _ctx.Projects.Remove(CurrentProject);
+            _ctx.SaveChanges();
+            return Redirect("/");
         }
     }
 }
