@@ -10,11 +10,11 @@
 
 </head>
 <body>
+
+
+    <a class="navbar-brand" style="cursor: pointer;" onclick="clearURL()">Home</a>
     
-   
-        <a class="navbar-brand" style="cursor: pointer;" onclick="clearURL()">Home</a>
-        <partial name="_LoginPartial" />
-    
+
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
@@ -23,7 +23,20 @@
         </main>
     </div>
 
-
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    &copy; 2021 - Blog - <a asp-area="" asp-page="/Privacy">Privacy</a><br />
+                </div>
+                <div class="col-6">
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+            
+            
+        </div>
+    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

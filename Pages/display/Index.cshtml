@@ -1,22 +1,22 @@
 ﻿@page "{projectname}"
 @model Public.Pages.display.IndexModel
 @using Microsoft.AspNetCore.Html
-@{       if (Model.CurrentProject.EnableMenu)
+@{ if (Model.CurrentProject.EnableMenu)
     {
 
 
-        switch (Model.CurrentProject.MenuType)
+        switch (Model.CurrentProject.MenuType) //select menu (nav) style
         {
-            case "h":
+            case "h": //horizontal
                 Layout = "_DisplayLayouth";
                 break;
-            case "vl":
+            case "vl": //vertical left
                 Layout = "_DisplayLayoutvl";
                 break;
-            case "vr":
+            case "vr": //vertical right
                 Layout = "_DisplayLayoutvr";
                 break;
-            default:
+            default: //none
                 Layout = "_DisplayLayout";
                 break;
 
@@ -29,21 +29,46 @@
 
 }
 
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=@Model.CurrentProject.Font">
+<style>
+        .container
+        {
+            background-color:@Model.CurrentProject.BgColor;
+            color:@Model.CurrentProject.TextColor;
+            font-family:@Model.CurrentProject.Font, sans-serif;
+        }
+        .menucolors{
+            color:@Model.CurrentProject.MenuTextColor;
+            background-color:@Model.CurrentProject.MenuBgColor;
+
+        }
+        .myfooter{
+            min-height:100px;
+            color:@Model.CurrentProject.FooterTextColor;
+            background-color:@Model.CurrentProject.FooterBgColor;
+        }
+
+
+</style>
+
+
+
 @if (Model.PageId != 0)
 {
 
     @foreach (var comp in Model.PageComponents)
     {
 
-        <div class="row">
+        <div class="row mt-3">
 
             @foreach (var column in comp.Columns)
             {
                 <div class="col">
                     @*@if (column.ComponentType == "default")
-                    {
-                        <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
-                    }*@
+                        {
+                            <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
+                        }*@
                     @if (column.ComponentType == "text")
                     {
                         <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Column="@column" />
@@ -68,6 +93,11 @@
         </div>
 
     }
+    <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1032655648&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
 
 }
-
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

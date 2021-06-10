@@ -17,7 +17,16 @@ namespace Public.Models
         public string OwnerName { get; set; }
         public string OwnerID { get; set; }
         public string CoverImageURL { get; set; }
-       
+        public string BgColor { get; set; }
+        public string TextColor { get; set; }
+        public string MenuBgColor { get; set; }
+        public string MenuTextColor { get; set; }
+        public string Font { get; set; }
+        public bool EnableFooter { get; set; }
+        public string FooterBgColor { get; set; }
+        public string FooterTextColor { get; set; }
+        public string FooterContent { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
     }

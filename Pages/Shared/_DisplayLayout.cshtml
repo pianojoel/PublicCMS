@@ -10,11 +10,21 @@
 
 </head>
 <body>
-    
-    <div class="container">
+    <span class="text-right"><a style="cursor: pointer;float:right;" onclick="goBack()">[close]</a> </span>
+    <div class="container p-0">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        @if (Model.CurrentProject.EnableFooter) 
+        {
+        
+        <div class="myfooter text-center py-5">
+
+            <p>@Model.CurrentProject.FooterContent</p>
+
+        </div>
+        }
+
     </div>
 
     

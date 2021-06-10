@@ -8,13 +8,17 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="https://cdn.tiny.cloud/1/dati1bok39b2ty7rz015r8173gj642okx8s423m4tlilk0ro/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
+    
 </head>
 <body>
-    @ViewData["Hej"]
-    <div class="container">
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
+   
+    <span class="text-right"><a style="cursor: pointer;float:right;" onclick="goBack()">[close]</a> </span>
+    <div class="container p-0">
+
+
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm  mb-3">
+            <div class="container menucolors">
                 <a class="navbar-brand" style="cursor: pointer;" onclick="clearURL()">Home</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -28,23 +32,32 @@
                         {
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" style="cursor: pointer;" href="@item.TargetURL">@item.Text</a>
+                                <a class="nav-link menucolors" style="cursor: pointer;" href="@item.TargetURL">@item.Text</a>
                             </li>
                         }
 
 
                     </ul>
-                    
+
                 </div>
             </div>
         </nav>
-        <h1>Horizontal</h1>
+
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+        @if (Model.CurrentProject.EnableFooter)
+        {
+            <div class="myfooter text-center py-5">
 
-    
+                <p>@Model.CurrentProject.FooterContent</p>
+
+            </div>
+        }
+
+        </div>
+     
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

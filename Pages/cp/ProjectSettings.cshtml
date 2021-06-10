@@ -2,29 +2,50 @@
 @model Public.Pages.cp.ProjectSettingsModel
 @{
 }
-<form method="post">
-    <p>Enable menu</p>
-    <label class="switch">
-        <input onChange="this.form.submit()" asp-for="EnableMenu" type="checkbox" value="true">
-       
-        <span class="slider round"></span>
-    </label>
+
+<a href=@("/display/" + @Model.CurrentProject.ProjectNameRoute)>Display</a>
+<p class="text-right"><a style="cursor: pointer;" onclick="goBack()">[close]</a> </p>
+<div class="border p-3">
+    <form method="post">
+        <p>Enable menu</p>
+        <label class="switch">
+            <input onChange="this.form.submit()" asp-for="EnableMenu" type="checkbox" value="true">
+
+            <span class="slider round"></span>
+        </label>
+        <input type="hidden" asp-for="EnableFooter" value="@Model.EnableFooter" />
     </form>
 
 
-@if (Model.EnableMenu)
-{
-    <div>
+    @if (Model.EnableMenu)
+    {
+
         <form method="post">
-            <div>
-                <h6>Select menu layout:</h6>
-                <input type="radio" asp-for="Menutype" value="h">
-                <label>Horizontal</label>
-                <input type="radio" asp-for="Menutype" value="vl">
-                <label>Vertical left</label>
-                <input type="radio" asp-for="Menutype" value="vr">
-                <label>Vertical right</label>
-                <button class="btn btn-primary" asp-page-handler="SetLayout">Set</button>
+            <div class="row">
+                <div class="col-6">
+                    <h6>Select menu layout:</h6>
+                    <input type="radio" asp-for="Menutype" value="h">
+                    <label>Horizontal</label><br />
+                    <input type="radio" asp-for="Menutype" value="vl">
+                    <label>Vertical left</label><br />
+                    <input type="radio" asp-for="Menutype" value="vr">
+                    <label>Vertical right</label><br />
+                    <button class="btn btn-primary" asp-page-handler="SetLayout">Set layout</button>
+                </div>
+                <div class="col-6">
+                    <h6>Select menu colors:</h6>
+                    <div class="form-group">
+
+                        <input type="color" asp-for="MenuBgColor" value="@Model.CurrentProject.MenuBgColor" />
+                        <label for="MenuBgColor">Background color</label>
+                    </div>
+                    <div class="form-group">
+
+                        <input type="color" asp-for="MenuTextColor" value="@Model.CurrentProject.MenuTextColor" />
+                        <label for="MenuTextColor">Text color</label>
+                    </div>
+                    <button class="btn btn-primary" asp-page-handler="SetMenuColors">Set menu colors</button>
+                </div>
             </div>
             <table class="table mt-3">
                 <thead>
@@ -62,6 +83,28 @@
                     }
 
                     <tr>
+                        <td>
+                            <div class="form-group">
+                                <label for="NewItemText">Menu text</label>
+                                <input type="text" asp-for="NewItemText" />
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <label for="NewItemURL">Link URL </label>
+                                <input type="text" asp-for="NewItemURL" />
+
+                            </div>
+
+
+                        </td>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-primary" asp-page-handler="CreateItem" type="submit">Add Menu Item</button>
+
+                        </td>
+
                     </tr>
 
                 </tbody>
@@ -69,23 +112,94 @@
             </table>
         </form>
 
-<form method="post">
-    <div class="form-group">
-        <label for="NewItemText">Menu text</label>
-        <input type="text" asp-for="NewItemText" />
-        <span asp-validation-for="NewItemText" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label for="NewItemURL">Link URL </label>
-        <input type="text" asp-for="NewItemURL" />
-        <span asp-validation-for="NewItemURL" class="text-danger"></span>
-    </div>
-    <button class="btn btn-primary" asp-page-handler="CreateItem" type="submit">Add Menu Item</button>
 
-</form>
+
+    }
 </div>
-}
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <div class="border p-3">
+        <h6>Color settings:</h6>
+        <form method="post">
+            <div class="form-group">
+
+                <input type="color" asp-for="BgColor" value="@Model.CurrentProject.BgColor" />
+                <label for="BgColor">Background color</label>
+            </div>
+            <div class="form-group">
+
+                <input type="color" asp-for="TextColor" value="@Model.CurrentProject.TextColor" />
+                <label for="TextColor">Text color</label>
+            </div>
+            <div class="form-group">
+                <label for="Font">Font</label>
+                <select asp-for="Font" class="form-control" data-role="select-dropdown">
+                    <option>Montserrat</option>
+                    <option>Roboto</option>
+                    <option>Merriweather</option>
+
+
+
+                </select>
+            </div>
+
+            <button class="btn btn-primary" asp-page-handler="ChangeSettings">Change Settings</button>
+        </form>
+    </div>
+
+
+    <div class="border p-3">
+        <form method="post">
+            <h6>Enable footer</h6>
+            <label class="switch">
+                <input onChange="this.form.submit()" asp-for="EnableFooter" type="checkbox" value="true">
+
+                <span class="slider round"></span>
+            </label>
+            <input type="hidden" asp-for="EnableMenu" value="@Model.EnableMenu" />
+        </form>
+
+        @if (Model.EnableFooter)
+        {
+            <div>
+                <form method="post">
+                    <div class="form-group">
+
+                        <input type="color" asp-for="FooterBgColor" value="@Model.CurrentProject.FooterBgColor" />
+                        <label for="FooterBgColor">Background color</label>
+                    </div>
+                    <div class="form-group">
+
+                        <input type="color" asp-for="FooterTextColor" value="@Model.CurrentProject.FooterTextColor" />
+                        <label for="FooterTextColor">Text color</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="FooterContent">Footer content</label>
+                        <input type="text" asp-for="FooterContent" value="@Model.CurrentProject.FooterContent" />
+
+                    </div>
+
+                    <button class="btn btn-primary" asp-page-handler="ChangeFooterSettings">Change Settings</button>
+                </form>
+
+
+            </div>
+
+
+        }
+
+    </div>
+
+
+
+
+    @*@section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+        }*@
+
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
 

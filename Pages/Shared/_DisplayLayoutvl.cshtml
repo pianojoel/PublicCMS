@@ -11,48 +11,55 @@
 
 </head>
 <body>
-    
-    <div class="container">
-       <div class="row">
-           <div class="col-2">
-               <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                   <div class="container">
-                       
-                       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                               aria-expanded="false" aria-label="Toggle navigation">
-                           <span class="navbar-toggler-icon"></span>
-                       </button>
-                       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                           <ul class="navbar-nav flex-column flex-grow-1">
+    <span class="text-right"><a style="cursor: pointer;float:right;" onclick="goBack()">[close]</a> </span>
+    <div class="container p-0">
+        <div class="row">
+            <div class="col-2">
+                <nav class="navbar navbar-expand-sm navbar-toggleable-sm  mb-3">
+                    <div class="container menucolors">
+
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                            <ul class="navbar-nav flex-column flex-grow-1">
 
 
-                               @foreach (var item in (List<MenuItem>)ViewData["MenuItems"])
-                               {
+                                @foreach (var item in Model.MenuItems)
+                                {
 
-                                   <li class="nav-item">
-                                       <a class="nav-link text-dark" style="cursor: pointer;" href="@item.TargetURL">@item.Text</a>
-                                   </li>
-                               }
-
-
-                           </ul>
-
-                       </div>
-                   </div>
-               </nav>
-
-           </div>
-           <div class="col-10">
-               <main role="main" class="pb-3">
-                   @RenderBody()
-               </main>
-
-           </div>
+                                    <li class="nav-item">
+                                        <a class="nav-link menucolors" style="cursor: pointer;" href="@item.TargetURL">@item.Text</a>
+                                    </li>
+                                }
 
 
-       </div>
-       
-    </div>
+                            </ul>@*(List<MenuItem>)ViewData["MenuItems"]*@
+
+                        </div>
+                    </div>
+                </nav>
+
+            </div>
+            <div class="col-10">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+
+            </div>
+
+
+        </div>
+        @if (Model.CurrentProject.EnableFooter)
+        {
+            <div class="myfooter text-center py-5">
+
+                <p>@Model.CurrentProject.FooterContent</p>
+
+            </div>
+        }
+        </div>
 
     
 

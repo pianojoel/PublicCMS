@@ -34,7 +34,7 @@ namespace Public.Pages.display
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _ctx.Projects.Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
 
-            MenuItems = CurrentProject.MenuItems;
+            MenuItems = CurrentProject.MenuItems.OrderBy(m => m.DisplayOrder).ToList();
 
             SitePages = await _ctx.SitePage
                 .Include(s => s.Project)
