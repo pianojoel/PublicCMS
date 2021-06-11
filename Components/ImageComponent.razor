@@ -1,4 +1,5 @@
 ﻿@using Public.Models
+
 @code {
     [Parameter]
     public ColumnComp Column { get; set; }
@@ -6,21 +7,30 @@
     public int CompId { get; set; }
     [Parameter]
     public int PageId { get; set; }
+    [Parameter]
+    public bool Display { get; set; }
+
 }
 
 @if (Column.ImageURL != null)
 {
-<div class="text-center">
-    <img id=@($"img{CompId}{Column.ID}") src="/img/@Column.ImageURL" style="width: @Column.ImageSize%" />
-</div>
+    <div class="text-center my-auto">
+        <img id=@($"img{CompId}{Column.ID}") src="/img/@Column.ImageURL" style="width: @Column.ImageSize%" />
+    </div>
+    
+    @if (!Display)                            
+{
 <div>
-    <input id=@($"range{CompId}{Column.ID}") class="rangeinput" type="range" name="ImageSize" onchange="pressBtn('range' +@CompId + '' + @Column.ID,'btn'+@CompId + '' + @Column.ID, '.rangeinput')" oninput="changeImgSize('img' + @CompId + @Column.ID, 'range' + @CompId + @Column.ID)" value=@Column.ImageSize/>
+    <input id=@($"range{CompId}{Column.ID}") class="rangeinput" type="range" name="ImageSize" onchange="pressBtn('range' +@CompId + '' + @Column.ID,'btn'+@CompId + '' + @Column.ID, '.rangeinput')" oninput="changeImgSize('img' + @CompId + @Column.ID, 'range' + @CompId + @Column.ID)" value=@Column.ImageSize />
     <button class="d-none" id=@($"btn{CompId}{Column.ID}") formaction="?handler=SetImageSize&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Size</button>
 </div>
+
+}
+
 }
 else
 {
-    <input type="file" name="UploadedImage" value="Image File" />
-    <button formaction="?handler=SetImage&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Image</button>
+<input type="file" name="UploadedImage" value="Image File" />
+<button formaction="?handler=SetImage&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Image</button>
 
 }

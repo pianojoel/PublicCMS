@@ -84,7 +84,7 @@
                     }
                     else if (column.ComponentType == "image")
                     {
-                        <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                        <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Display=true param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
                     }
 
                 </div>

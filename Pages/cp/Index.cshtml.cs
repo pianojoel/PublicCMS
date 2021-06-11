@@ -43,7 +43,7 @@ namespace Public.Pages.cp
 
         public async Task<IActionResult> OnGetAsync()
         {
-
+            
 
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _ctx.Projects.Find(id);

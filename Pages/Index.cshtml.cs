@@ -67,6 +67,10 @@ namespace Public.Pages
             Project.CoverImageURL = UploadedImage != null ? UploadedImage.FileName : "";
             Project.CreatedDate = DateTime.Now;
             Project.OwnerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Project.BgColor = "#ffffff";
+            Project.TextColor = "#000000";
+            
+
             SitePage index = new()
             {
                 IsIndex = true,

@@ -13,6 +13,7 @@ using Public.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Public
@@ -42,7 +43,7 @@ namespace Public
             services.AddDbContext<PublicContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("PublicContext")));
             services.AddScoped<PublicContext>();
-
+            
 
             services.Configure<CookiePolicyOptions>(options =>
             {

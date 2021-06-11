@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,8 @@ namespace Public.Pages.cp
     {
 
         private readonly PublicContext _ctx;
+        public HttpClient _client = new HttpClient();
+        public GoogleFont GoogleFont { get; set; } 
         [BindProperty]
         public List<MenuItem> MenuItems { get; set; }
         [BindProperty]
@@ -51,8 +55,9 @@ namespace Public.Pages.cp
         public ProjectSettingsModel(PublicContext ctx)
         {
             _ctx = ctx;
+            
         }
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _ctx.Projects.Include(p => p.Pages).Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
@@ -60,8 +65,12 @@ namespace Public.Pages.cp
             Menutype = CurrentProject.MenuType;
             EnableMenu = CurrentProject.EnableMenu;
             EnableFooter = CurrentProject.EnableFooter;
+
+            await OnPostGetFontsAsync();
+            return Page();
+
         }
-         public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _ctx.Projects.Include(p => p.Pages).Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
@@ -210,5 +219,17 @@ namespace Public.Pages.cp
             await _ctx.SaveChangesAsync();
             return Redirect("./ProjectSettings");
         }
+
+        public async Task<IActionResult> OnPostGetFontsAsync()
+        {
+            var requestString = "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyDpngdKx0fxYhAXqllNUhNEdfHxZf46vU4";
+            Task<string> getFontsStringTask = _client.GetStringAsync(requestString);
+            var getFontsString = await getFontsStringTask;
+            Console.WriteLine("Hej");
+            GoogleFont = JsonSerializer.Deserialize<GoogleFont>(getFontsString);
+            return Page();
+        }
+
+        
     }
 }
