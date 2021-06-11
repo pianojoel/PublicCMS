@@ -15,6 +15,7 @@ namespace Public.Models
         public string Content { get; set; }
         public string ComponentType { get; set; }
         public string ImageURL { get; set; }
+        public int ImageSize { get; set; }
         public string LinkURL { get; set; }
         public string LinkText { get; set; }
         

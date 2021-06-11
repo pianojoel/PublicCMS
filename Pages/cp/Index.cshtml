@@ -209,7 +209,7 @@
                 </div>
                 }
                 <div class="row">
-                    <div class="col-1 w-100"></div>
+                    <div class="col-2 w-100"></div>
                     <div class="col-6">
                         
                             <button asp-page-handler="AddComponent" asp-route-pageid="@Model.PageId" class="btn btn-secondary newcomponent-button" id="dropdownMenuButton">Add row</button>
@@ -226,6 +226,31 @@
     </div>
 
     <script>
+
+        function changeImgSize(imgId, rangeId) {
+            let img = document.getElementById(imgId);
+           
+            let range = document.getElementById(rangeId);
+            img.style.width = range.value + '%';
+            
+        }
+
+        function pressBtn(inputId, btnId, inputClass) {
+
+            enableInput(inputClass, inputId);
+            document.getElementById(btnId).click();
+            
+        }
+
+        function enableInput(inputClass, inputId) {
+            let inputs = document.querySelectorAll(inputClass);
+            inputs.forEach(i => {
+                i.setAttribute("disabled", true);
+            });
+            let toEnable = document.getElementById(inputId);
+            toEnable.removeAttribute('disabled');
+        }
+
         function handle(e, id) {
             if (e.keyCode === 13) {
                 e.preventDefault(); // Ensure it is only this code that runs

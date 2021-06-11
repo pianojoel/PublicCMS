@@ -36,6 +36,8 @@ namespace Public.Pages.cp
         }
         public string ImageDescription { get; set; }
         [BindProperty]
+        public int ImageSize { get; set; }
+        [BindProperty]
         public IFormFile UploadedImage { get; set; }
         public IList<SitePage> SitePages { get; set; }
 
@@ -293,5 +295,17 @@ namespace Public.Pages.cp
             return Redirect("?pageid=" + PageId);
         }
 
+        public async Task<IActionResult> OnPostSetImageSizeAsync(int compid, int displayOrder)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+
+            cc.ImageSize = ImageSize;
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+        }
     }
 }

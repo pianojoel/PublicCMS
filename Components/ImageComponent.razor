@@ -10,8 +10,13 @@
 
 @if (Column.ImageURL != null)
 {
-    <img src="/img/@Column.ImageURL" class="w-100" />
-
+<div class="text-center">
+    <img id=@($"img{CompId}{Column.ID}") src="/img/@Column.ImageURL" style="width: @Column.ImageSize%" />
+</div>
+<div>
+    <input id=@($"range{CompId}{Column.ID}") class="rangeinput" type="range" name="ImageSize" onchange="pressBtn('range' +@CompId + '' + @Column.ID,'btn'+@CompId + '' + @Column.ID, '.rangeinput')" oninput="changeImgSize('img' + @CompId + @Column.ID, 'range' + @CompId + @Column.ID)" value=@Column.ImageSize/>
+    <button class="d-none" id=@($"btn{CompId}{Column.ID}") formaction="?handler=SetImageSize&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Size</button>
+</div>
 }
 else
 {
