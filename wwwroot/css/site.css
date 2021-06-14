@@ -216,3 +216,7 @@ input:checked + .slider:before {
 .modal-open .modal{
     overflow-y:hidden;
 }
+.myeditablediv-header { 
+    font-size:50px; 
+    
+}

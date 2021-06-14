@@ -64,11 +64,16 @@ namespace Public.Pages.display
                 }
             }
 
-            var requestString = "https://publiccmsvisitorcounter.azurewebsites.net/api/visitors/" + CurrentPage.PageGuid;
-            Task<string> getVisitorsTask = _client.GetStringAsync(requestString);
-            var getVisitorsString = await getVisitorsTask;
+            if(CurrentPage.PageComponents.Any(pc => pc.Columns.Any(cc => cc.ComponentType == "visitorcounter")))
+            {
+                var requestString = "https://publiccmsvisitorcounter.azurewebsites.net/api/visitors/" + CurrentPage.PageGuid;
+                Task<string> getVisitorsTask = _client.GetStringAsync(requestString);
+                var getVisitorsString = await getVisitorsTask;
 
-            Visitors = JsonSerializer.Deserialize<int>(getVisitorsString);
+                Visitors = JsonSerializer.Deserialize<int>(getVisitorsString);
+            }
+
+           
 
 
             return Page();

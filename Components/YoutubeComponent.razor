@@ -16,6 +16,8 @@
 </div>
 @if (!Display)
 {
+<div class="text-center">
     <input type="text" name="VideoString" value="@Column.VideoString" />
-    <button formaction="?handler=SetVideo&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set video</button>
+    <button class="btn btn-primary"formaction="?handler=SetVideo&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set video</button>
+</div>
 }
