@@ -14,25 +14,33 @@
 
         @foreach (var item in Model.SitePages)
         {
-            <div class="col-2">
-                <div class="card mini-card">
-                    <a href="?pageid=@item.ID">
-                        @Html.DisplayFor(modelItem => item.Title)
-                    </a>
-                </div>
+        <div class="col">
+            <div class="glass-card">
+                <a  href="?pageid=@item.ID">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </a>
             </div>
+
+
+        </div>
         }
 
-        <div class="col-2">
-            <div class="card mini-card dashed-border">
-                <a asp-page="Create">New Page</a>
-
+    <div class="col">
+        <div class="glass-card">
+            <a asp-page="Create">New Page</a>
             </div>
+
 
         </div>
 
-
-
+    </div>
+    <div class="row mt-3">
+        <div class="col-4">
+            <a class="btn btn-primary" href="/cp/projectsettings">Project Settings</a>
+        </div>
+        <div class="col-4">
+            <a class="btn btn-primary" href=@("/display/" + Model.CurrentProject.ProjectNameRoute)>Display page</a>
+        </div>
     </div>
 </div>
 
@@ -43,58 +51,18 @@
 
     tinymce.init({
         selector: '.myeditablediv',
-        plugins: [
-            'autolink',
-            'codesample',
-            'link',
-            'lists',
-            'media',
-            'powerpaste',
-            'table',
-            'image',
-            'quickbars',
-            'codesample',
-            'help'
-            //'textcolor'
-        ],
-        quickbars_selection_toolbar: 'bold italic | formatselect | quicklink | blockquote forecolor backcolor',
-        toolbar: false,
-        menubar: false,
-        inline: true,
-        height: 200,
-
-        setup: function (editor) {
-            editor.on('blur', function (e) {
-
-                let id = $(this).attr("id");
-                console.log(id);
-               
-                document.getElementById("b" + id).click();
-            });
-        }
-
-
        
-    });
-
-    tinymce.init({
-        selector: '.myeditablediv-header',
         plugins: [
             'autolink',
-
+            'codesample',
             'link',
-
-
-
-
-
-
-
+            'lists',                                    
+            'quickbars',            
+            'textcolor'
         ],
-        //quickbars_selection_toolbar: 'bold italic | formatselect | forecolor backcolor',
-        block_formats: 'Large=h1; Medium=h3; Small=h6',
-
-        toolbar: 'undo redo | bold italic underline',
+        quickbars_selection_toolbar: 'bold italic | alignleft aligncenter alignright | quicklink | forecolor backcolor',
+        quickbars_insert_toolbar: false,
+        toolbar: false,
         menubar: false,
         inline: true,
         height: 300,
@@ -104,25 +72,45 @@
 
                 let id = $(this).attr("id");
                 console.log(id);
-               
+
                 document.getElementById("b" + id).click();
             });
         }
 
 
-        //setup: function (editor) {
-        //tinymce.on('deactivate'), function() {
-        //    document.editorForm.submit();
-        //}
+
+    });
+
+    tinymce.init({
+        selector: '.myeditablediv-header',
+        plugins: [
+            'autolink',
+            'quickbars',   
+            'link',
+        ],
+        quickbars_selection_toolbar: 'bold italic | alignleft aligncenter alignright | forecolor backcolor',
+        quickbars_insert_toolbar: false,        
+        toolbar: false,
+        menubar: false,
+        inline: true,
+        height: 300,
+
+        setup: function (editor) {
+            editor.on('blur', function (e) {
+
+                let id = $(this).attr("id");
+                console.log(id);
+
+                document.getElementById("b" + id).click();
+            });
+        }
+
+
+       
     });
 
 
-    //tinymce.init({
-    //    selector: '#myeditable-h1',
-    //    inline: true,
-    //    menubar: false,
-    //    toolbar: 'undo redo'
-    //});
+   
 
 </script>
 
@@ -133,91 +121,107 @@
 
     <div>
 
-        <a href="/cp/projectsettings">project settings</a>
-        <a href=@("/display/" + @Model.CurrentProject.ProjectNameRoute)>Display</a>
+       
         <div>
 
-           
+
             <form method="post" id="editorForm" name="editorForm" enctype="multipart/form-data">
 
                 @foreach (var comp in Model.PageComponents)
                 {
-                <div class="row" id=@("Row" + @comp.ID)>
-                    <div class="col-1">
-                        <button style="display:none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
-                        <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" />
-                    </div>
-                    
-                    <div class="col-1">
-                        <button asp-page-handler="AddColumn" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId">Add Column</button>
-                    </div>
-                   
-
-
-
-                    <div class="col-6">
-                        <div class="row flex-nowrap" style="overflow-x:hidden">
-                            
-
-
-                            @foreach (var column in comp.Columns)
-                            {
-                            <div class="col">
-                                @if (column.ComponentType == "default")
-                                {
-                                    <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
-                                }
-                                else if (column.ComponentType == "text")
-                                {
-                                    <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Column="@column" />
-                                }
-                                else if (column.ComponentType == "link")
-                                {
-                                    <component type="typeof(Components.LinkComponent)" render-mode="Static" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                }
-
-                                else if (column.ComponentType == "header")
-                                {
-                                    <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-Column="@column" />
-                                }
-                                else if (column.ComponentType == "image")
-                                {
-                                    <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                }
-                                  
-                                <button class="d-none" id="@("b" + column.ID)" asp-page-handler="SaveColumnComp" asp-route-compid="@comp.ID" asp-route-column="@column.ID" asp-route-pageid="@Model.PageId"></button>
-                            </div>
-                            }
+                    <div style="background-color:@comp.BgColor" class="row comp-row" id=@("Row" + @comp.ID)>
+                        <div class="col-1">
+                            <button class="d-none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
+                            <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" value="@comp.BgColor"/>
                         </div>
-                    </div>
 
-                   
-                    <div class="col-1">
-                        <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId"><img src="~/deleteicon.png" width="25"></button>
+                        <div class="col-1">
+                            @if (!comp.Columns.Any(c => c.ComponentType == "video" || c.ComponentType == "googlemap" || c.ComponentType == "stockticker"))
+                            {
+                                <button class="btn btn-primary" asp-page-handler="AddColumn" asp-route-compid="@comp.ID" asp-route-pageid="@Model.PageId">Add Column</button>
+                            }
 
-                    </div>
-                    @if (comp.DisplayOrder != 0)
-                    {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveUp" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&uarr;</button></div>}
-                    else
-                    {<div class="col-1"><button disabled class="btn btn-primary disabled">&uarr;</button></div>}
+                        </div>
 
-                    @if (comp.DisplayOrder != Model.PageComponents.Count - 1)
-                    {<div class="col-1"><button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&darr;</button></div>}
-                    else
-                    {<div class="col-1"><button disabled class="btn btn-primary disabled">&darr;</button></div>}
-                    
-                </div>
+
+
+
+                        <div class="col-8">
+                            <div class="row flex-nowrap" style="overflow-x:hidden; min-height:200px;">
+
+
+
+                                @foreach (var column in comp.Columns)
+                                {
+                                <div class="col">
+                                    @if (column.ComponentType == "default")
+                                    {
+                                        <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-CurrentPage="@Model.CurrentPage" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
+                                    }
+                                    else if (column.ComponentType == "text")
+                                    {
+                                        <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Column="@column" />
+                                    }
+                                    else if (column.ComponentType == "link")
+                                    {
+                                        <component type="typeof(Components.LinkComponent)" render-mode="Static" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                    }
+
+                                    else if (column.ComponentType == "header")
+                                    {
+                                        <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-Column="@column" />
+                                    }
+                                    else if (column.ComponentType == "image")
+                                    {
+                                        <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                    }
+                                    else if (column.ComponentType == "googlemap")
+                                    {
+                                        <component type="typeof(Components.GoogleMapComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                    }
+                                    else if (column.ComponentType == "stockticker")
+                                    {
+                                        <component type="typeof(Components.StockTickerComponent)" render-mode="ServerPrerendered" param-CurrentPage="@Model.CurrentPage" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                    }
+                                    else if (column.ComponentType == "video")
+                                    {
+                                        <component type="typeof(Components.YoutubeComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                    }
+                                    else if (column.ComponentType == "visitorcounter")
+                                    {
+                                        <component type="typeof(Components.VisitorCounterComponent)" render-mode="ServerPrerendered" param-visitors=@Model.Visitors />
+                                    }
+                                    <button class="d-none" id="@("b" + column.ID)" asp-page-handler="SaveColumnComp" asp-route-compid="@comp.ID" asp-route-column="@column.ID" asp-route-pageid="@Model.PageId"></button>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+
+                        <div class="col-2">
+                            <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId"><img src="~/deleteicon.png" width="25"></button>
+
+
+                            @if (comp.DisplayOrder != 0)
+                            {<button class="btn btn-primary" asp-page-handler="MoveUp" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&uarr;</button>}
+                            else
+                            {<button disabled class="btn btn-primary disabled">&uarr;</button>}
+
+                            @if (comp.DisplayOrder != Model.PageComponents.Count - 1)
+                            {<button class="btn btn-primary" asp-page-handler="MoveDown" asp-route-order="@comp.DisplayOrder" asp-route-pageid="@Model.PageId">&darr;</button>}
+                            else
+                            {<button disabled class="btn btn-primary disabled">&darr;</button>}
+
+                        </div>
+                     </div>
+
                 }
-                <div class="row">
-                    <div class="col-2 w-100"></div>
-                    <div class="col-6">
-                        
-                            <button asp-page-handler="AddComponent" asp-route-pageid="@Model.PageId" class="btn btn-secondary newcomponent-button" id="dropdownMenuButton">Add row</button>
-                            
-                       
-                    </div>
-                    <div class="col-4"></div>
-                </div>
+                        <div class="row mt-3">                            
+                                <button asp-page-handler="AddComponent" asp-route-pageid="@Model.PageId" class="btn btn-secondary newcomponent-button" id="dropdownMenuButton">Add row</button>                            
+                        </div>
+
+                    
+                
             </form>
 
         </div>
@@ -228,28 +232,52 @@
     <script>
 
         function changeImgSize(imgId, rangeId) {
+
+            console.log(rangeId);
+
             let img = document.getElementById(imgId);
-           
+
             let range = document.getElementById(rangeId);
             img.style.width = range.value + '%';
-            
+
         }
 
-        function pressBtn(inputId, btnId, inputClass) {
+        function pressBtn(blockInputClass, allowInputClass, btnId) {
 
-            enableInput(inputClass, inputId);
+
+
+            console.log(btnId);
+
+            enableInput(blockInputClass, allowInputClass);
             document.getElementById(btnId).click();
-            
+
         }
 
-        function enableInput(inputClass, inputId) {
-            let inputs = document.querySelectorAll(inputClass);
-            inputs.forEach(i => {
+        function enableInput(blockInputClass, allowInputClass) {
+            let blockInputs = document.querySelectorAll('.' + blockInputClass);
+            blockInputs.forEach(i => {
                 i.setAttribute("disabled", true);
             });
-            let toEnable = document.getElementById(inputId);
-            toEnable.removeAttribute('disabled');
+            let toEnable = document.querySelectorAll('.' + allowInputClass);
+            toEnable.forEach(i => {
+                i.removeAttribute('disabled');
+                console.log("removed disabledattribute for: " + i.value);
+            });
+
+
         }
+
+        function pressEnterSubmit(e, blockInputClass, allowInputClass, btnId) {
+            if (e.keyCode === 13) {
+                e.preventDefault(); // Ensure it is only this code that runs
+
+                console.log("Pressed Enter");
+                enableInput(blockInputClass, allowInputClass);
+                document.getElementById(btnId).click();
+
+            }
+        }
+
 
         function handle(e, id) {
             if (e.keyCode === 13) {

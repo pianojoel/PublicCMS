@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <script src="https://cdn.tiny.cloud/1/dati1bok39b2ty7rz015r8173gj642okx8s423m4tlilk0ro/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Angkor">
 </head>
 <body>
 
@@ -15,11 +15,12 @@
     <a class="navbar-brand" style="cursor: pointer;" onclick="clearURL()">Home</a>
     
 
-    <div class="container">
+    <div class="container glass-card">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
 
             @RenderBody()
+
         </main>
     </div>
 

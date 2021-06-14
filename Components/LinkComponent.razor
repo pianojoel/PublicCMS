@@ -18,8 +18,8 @@
 else
 {
 <div>
-    <input class="linkInput @("link"+CompId)" type="text" name="LinkURL" placeholder="http://" onkeydown="handle(event, @CompId)" />
-    <input class="linkInput @("link"+CompId)" type="text" name="LinkText" placeholder="Link text" onkeydown="handle(event, @CompId)"/>
+    <input class="linkInput @("link"+CompId)" type="text" name="LinkURL"  onclick="this.select()" value="http://" onkeydown="handle(event, @CompId)" />
+    <input class="linkInput @("link"+CompId)" type="text" name="LinkText" onclick="this.select()" value="Link text" onkeydown="handle(event, @CompId)"/>
     <button id="@("btn"+CompId)" formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@Column.LinkURL&LinkText=@Column.LinkText&displayorder=@Column.DisplayOrder" onclick="enableLinkInput('@("link"+CompId)')">Set Link</button>
 </div>
     //formaction="?handler=SetLink&compid=@CompId&PageId=@PageId&LinkURL=@LinkURL&LinkText=@LinkText"

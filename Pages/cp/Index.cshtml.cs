@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +18,8 @@ namespace Public.Pages.cp
     public class IndexModel : PageModel
     {
         private readonly Public.Data.PublicContext _ctx;
-
-        //[BindProperty]
-        //public string LinkURL { get; set; }
-        //[BindProperty]
-        //public string LinkText { get; set; }
+        public HttpClient _client = new HttpClient();
+        public int Visitors { get; set; }
         public Project CurrentProject { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageId { get; set; }
@@ -40,6 +39,33 @@ namespace Public.Pages.cp
         [BindProperty]
         public IFormFile UploadedImage { get; set; }
         public IList<SitePage> SitePages { get; set; }
+        [BindProperty]
+        public string MapLocation { get; set; }
+        
+        [BindProperty]
+        public string TickerSymbol1 { get; set; }
+        [BindProperty]
+        public string TickerName1 { get; set; }
+        [BindProperty]
+        public string TickerSymbol2 { get; set; }
+        [BindProperty]
+        public string TickerName2 { get; set; }
+        [BindProperty]
+        public string TickerSymbol3 { get; set; }
+        [BindProperty]
+        public string TickerName3 { get; set; }
+        [BindProperty]
+        public string TickerSymbol4 { get; set; }
+        [BindProperty]
+        public string TickerName4 { get; set; }
+        [BindProperty]
+        public string TickerSymbol5 { get; set; }
+        [BindProperty]
+        public string TickerName5 { get; set; }
+        public SitePage CurrentPage { get; set; }
+        [BindProperty]
+        public string VideoString { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -65,6 +91,7 @@ namespace Public.Pages.cp
 
 
                 var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc =>pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+                CurrentPage = p;
                 
                 if (p.PageComponents != null)
                 {
@@ -72,39 +99,16 @@ namespace Public.Pages.cp
 
                  }
             }
+
+          
+
+
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            //var results = HttpContext.Request.Form.ToList();
-            //results = results.Where(r => r.Key != "__RequestVerificationToken" && r.Key != "BgColor").ToList(); //__RequestVerificationToken
+       
 
-            // var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
-            //CurrentProject = _ctx.Projects.Find(id);
-
-            //SitePages = await _ctx.SitePage
-            //    .Include(s => s.Project)
-            //    .Where(p => p.ProjectID == CurrentProject.ID)
-            //    .ToListAsync();
-            //var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
-            //p.PageComponents.Clear();
-            //for (int i = 0; i < results.Count(); i++)
-            //{
-            //    p.PageComponents.Add(new PageComponent
-            //    {
-            //        Content = results[i].Value,
-            //        DisplayOrder = i
-                    
-            //    });
-            //}
-
-            
-
-            //await _ctx.SaveChangesAsync();
-
-            return Redirect("?pageid=" + PageId);
-        }
         public async Task<IActionResult> OnPostMoveUpAsync(int order)
         {
             var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
@@ -136,12 +140,28 @@ namespace Public.Pages.cp
 
         public async Task<IActionResult> OnPostRemoveAsync(int deleteid)
         {
-            var p = _ctx.SitePage.Include(p => p.PageComponents).FirstOrDefault(sp => sp.ID == PageId);
-            
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
 
-            
-            
+
+
+
             var toRemove = p.PageComponents.FirstOrDefault(pc => pc.ID == deleteid);
+
+            foreach(var col in toRemove.Columns)
+            {
+                if (col.ImageURL != null)
+                {
+                    try
+                    {
+                        System.IO.File.Delete("./wwwroot/img/" + col.ImageURL);
+                    }
+                    catch { }
+                }
+
+               
+            }
+            toRemove.Columns.RemoveAll(c => c.PageComponentID == toRemove.ID);
+
             p.PageComponents.Remove(toRemove);
 
 
@@ -302,6 +322,60 @@ namespace Public.Pages.cp
             var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
 
             cc.ImageSize = ImageSize;
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+        }
+
+        public async Task<IActionResult> OnPostSetMapLocationAsync(int compid, int displayOrder)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+
+            if(MapLocation != null)
+            {
+            cc.MapLocation = MapLocation;
+            }
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+        }
+
+        public async Task<IActionResult> OnPostSetTickersAsync(int compid, int displayOrder)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+
+            p.TickerSymbol1 = TickerSymbol1;
+            p.TickerName1 = TickerName1;
+            p.TickerSymbol2 = TickerSymbol2;
+            p.TickerName2 = TickerName2;
+            p.TickerSymbol3 = TickerSymbol3;
+            p.TickerName3 = TickerName3;
+            p.TickerSymbol4 = TickerSymbol4;
+            p.TickerName4 = TickerName4;
+            p.TickerSymbol5 = TickerSymbol5;
+            p.TickerName5 = TickerName5;
+
+            await _ctx.SaveChangesAsync();
+
+            return Redirect("?pageid=" + PageId);
+        }
+
+        public async Task<IActionResult> OnPostSetVideoAsync(int compid, int displayOrder)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+
+            if (VideoString != null)
+            {
+                cc.VideoString = VideoString;
+            }
 
             await _ctx.SaveChangesAsync();
 

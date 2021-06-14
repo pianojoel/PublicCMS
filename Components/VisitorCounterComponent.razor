@@ -1,0 +1,19 @@
+﻿
+@code {
+    [Parameter]
+    public int Visitors { get; set; }
+}
+
+
+@if (Visitors != 0)
+{
+    <div class="text-center">
+        <p>This page has been visited @Visitors @(Visitors > 1 ? "times" : "time") </p>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1>Visitor Counter</h1>
+    </div>
+}

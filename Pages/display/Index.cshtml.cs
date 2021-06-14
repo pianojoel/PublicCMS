@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Http;
@@ -14,7 +16,9 @@ namespace Public.Pages.display
 {
     public class IndexModel : PageModel
     {
-        private readonly PublicContext _ctx; 
+        private readonly PublicContext _ctx;
+        public HttpClient _client = new HttpClient();
+        public int Visitors { get; set; }
         
         public Project CurrentProject { get; set; }
         [BindProperty(SupportsGet=true)]
@@ -52,13 +56,21 @@ namespace Public.Pages.display
 
 
                 var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
-
+                CurrentPage = p;
                 if (p.PageComponents != null)
                 {
                     PageComponents = p.PageComponents.OrderBy(pc => pc.DisplayOrder).ToList();
 
                 }
             }
+
+            var requestString = "https://publiccmsvisitorcounter.azurewebsites.net/api/visitors/" + CurrentPage.PageGuid;
+            Task<string> getVisitorsTask = _client.GetStringAsync(requestString);
+            var getVisitorsString = await getVisitorsTask;
+
+            Visitors = JsonSerializer.Deserialize<int>(getVisitorsString);
+
+
             return Page();
 
 

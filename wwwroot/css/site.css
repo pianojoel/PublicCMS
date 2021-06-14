@@ -60,7 +60,9 @@ html {
 
 body {
   /* Margin bottom by footer height */
+  background-image:linear-gradient(to right, rgb(150 245 86), rgb(242 71 71), rgb(128 14 14));
   margin-bottom: 60px;
+  font-family:'angkor', sans-serif;
 }
 .footer {
   position: absolute;
@@ -80,7 +82,7 @@ body {
 }
 .mini-card {
     margin: 10px;
-    height: 150px;
+    /*height: 150px;*/
     width: 100px;
     text-decoration: none;
 }
@@ -193,3 +195,24 @@ input:checked + .slider:before {
         border-radius: 50%;
     }
 
+.glass-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, .5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.comp-row{
+    background-color:rgba(255,255,255, 0.7);
+    margin-top:5vh;
+    padding:5px;
+    
+
+}
+.modal-backdrop {
+    z-index: -1;
+}
+.modal-open .modal{
+    overflow-y:hidden;
+}

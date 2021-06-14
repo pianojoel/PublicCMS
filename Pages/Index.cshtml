@@ -7,53 +7,53 @@
 
 
 
-@if (Model.Projects != null) 
-{ 
+@if (Model.Projects != null)
+{
 
 
 
-    <div class="row text-center h-100 align-items-center">
-       
-        @*<div class="col-12">*@
+    <div class="row text-center justify-content-center align-items-center" style="min-height:75vh">
 
-            @foreach (var p in Model.Projects)
-            {
-                
-            <div class="col-3">
-                @*<a href="Edit-@p.ProjectNameRoute">*@
-                    <div class="big-card">
 
-                        <div class="card-title"><h3>@p.ProjectName</h3></div>
-                        <div style="height:10vh" class="border">
-                        @if(!String.IsNullOrEmpty(p.CoverImageURL))
-                        { 
-                        <img style="height:10vh" src="~/img/@p.CoverImageURL" />
+
+        @foreach (var p in Model.Projects)
+        {
+
+            <div class="col-4">
+
+                <div class="glass-card">
+
+                    <div class="card-title"><h3>@p.ProjectName</h3></div>
+                    <div style="height:10vh" class="border">
+                        @if (!String.IsNullOrEmpty(p.CoverImageURL))
+                        {
+                            <img style="height:10vh" src="~/img/@p.CoverImageURL" />
                         }
-                        </div>
-                        <div class="card-body">Created by @p.OwnerName on @p.CreatedDate</div>
-                        
-                        <form method="post">
-                            <button class="btn btn-primary" type="submit" asp-page-handler="Edit" asp-route-id="@p.ID">Edit</button>
-                            <button class="btn btn-primary" type="submit" asp-page-handler="Display" asp-route-id="@p.ID">Display</button>
-                            <button class="btn btn-danger" type="submit" asp-page-handler="DeleteProject" asp-route-deleteid="@p.ID">Delete</button>
-                        </form>
-
                     </div>
-               @* </a>*@
-            </div>
-               
-            }
-            <a href="?newproj=true" data-toggle="modal" data-target="#exampleModalCenter">
-                <div class="col-3 card big-card dashed-border">
+                    <div class="card-body">Created by @p.OwnerName on @p.CreatedDate</div>
 
-                    <div class="card-title"><h6>New Project</h6></div>
-                    <div class="row h-100 ">
-                        <div class="col-12 my-auto">
-                            <div class="card-img mx-auto"><img src="~/plus-solid.svg" width="70" /></div>
-                        </div>
+                    <form method="post">
+                        <button class="btn btn-primary" type="submit" asp-page-handler="Edit" asp-route-id="@p.ID">Edit</button>
+                        <button class="btn btn-primary" type="submit" asp-page-handler="Display" asp-route-id="@p.ID">Display</button>
+                        <button class="btn btn-danger" type="submit" asp-page-handler="DeleteProject" asp-route-deleteid="@p.ID">Delete</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        }
+        <a href="?newproj=true" data-toggle="modal" data-target="#exampleModalCenter">
+            <div class="glass-card dashed-border">
+
+                <div class="card-title"><h6>New Project</h6></div>
+                <div class="row">
+                    <div class="col-12 my-auto">
+                        <div class="card-img mx-auto"><img src="~/plus-solid.svg" width="70" /></div>
                     </div>
                 </div>
-            </a>
+            </div>
+        </a>
         @*</div>*@
 
 
@@ -65,44 +65,46 @@
 
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Create new project</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="Project.ProjectName" class="control-label">Project name</label>
-                            <input asp-for="Project.ProjectName" class="form-control" />
-                            <span asp-validation-for="Project.ProjectName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Project.OwnerName" class="control-label">Name of project owner</label>
-                            <input asp-for="Project.OwnerName" class="form-control" />
-                            <span asp-validation-for="Project.OwnerName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="UploadedImage" class="control-label">Add a cover image</label>
-                            <input asp-for="UploadedImage" class="form-control-file" />
-                            <span asp-validation-for="UploadedImage" class="text-danger"></span>
-                        </div>
 
-
-                        <div class="form-group">
-                            <input type="submit" value="Create" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
 }
+
+<!-- Modal -->
+<div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Create new project</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Project.ProjectName" class="control-label">Project name</label>
+                        <input asp-for="Project.ProjectName" class="form-control" />
+                        <span asp-validation-for="Project.ProjectName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Project.OwnerName" class="control-label">Name of project owner</label>
+                        <input asp-for="Project.OwnerName" class="form-control" />
+                        <span asp-validation-for="Project.OwnerName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UploadedImage" class="control-label">Add a cover image</label>
+                        <input asp-for="UploadedImage" class="form-control-file" />
+                        <span asp-validation-for="UploadedImage" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group">
+                        <input type="submit" asp-page-handler="CreateNewProject" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

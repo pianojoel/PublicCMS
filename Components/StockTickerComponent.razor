@@ -1,0 +1,38 @@
+﻿@using Public.Models
+
+@code {
+    [Parameter]
+    public PageComponent Comp { get; set; }
+    [Parameter]
+    public ColumnComp Column { get; set; }
+    [Parameter]
+    public int PageId { get; set; }
+    [Parameter]
+    public int CompId { get; set; }
+    [Parameter]
+    public SitePage CurrentPage { get; set; }
+
+
+}
+
+1.
+<input type="text" name="tickersymbol1" value=@CurrentPage.TickerSymbol1 />
+<input type="text" name="tickername1" value=@CurrentPage.TickerName1 />
+<br />
+2.
+<input type="text" name="tickersymbol2"value=@CurrentPage.TickerSymbol2 />
+<input type="text" name="tickername2" value=@CurrentPage.TickerName2/>
+<br />
+3.
+<input type="text" name="tickersymbol3" value=@CurrentPage.TickerSymbol3 />
+<input type="text" name="tickername3" value=@CurrentPage.TickerName3 />
+<br />
+4.
+<input type="text" name="tickersymbol4" value=@CurrentPage.TickerSymbol4/>
+<input type="text" name="tickername4" value=@CurrentPage.TickerName4 />
+<br />
+5.
+<input type="text" name="tickersymbol5" value=@CurrentPage.TickerSymbol5/>
+<input type="text" name="tickername5" value=@CurrentPage.TickerName5 />
+<br />
+<button formaction="?handler=SetTickers&compid=@CompId&PageId=@PageId&displayorder=@Column.DisplayOrder">Change tickers</button>

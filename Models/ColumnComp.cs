@@ -18,7 +18,12 @@ namespace Public.Models
         public int ImageSize { get; set; }
         public string LinkURL { get; set; }
         public string LinkText { get; set; }
-        
+        public string MapLocation { get; set; }
+        public int Mapsize { get; set; }
+        public string VideoString { get; set; }
+
+
+
 
         public int PageComponentID { get; set; }
         [JsonIgnore]

@@ -39,7 +39,7 @@ namespace Public.Pages.cp
             }
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _context.Projects.Find(id);
-            SitePage.TimesVisited = 0;
+           
             SitePage.ProjectID = CurrentProject.ID;
             //SitePage.PageBody = "Hello World!";
             _context.SitePage.Add(SitePage);

@@ -11,14 +11,15 @@ using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Public.Pages
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly PublicContext _ctx;
-        //[TempData]
-        //public int CurrentProjectID { get; set; }
+       
         public Project CurrentProject { get; set; }
         public List<Project> Projects { get; set; }
         [BindProperty]
@@ -50,8 +51,9 @@ namespace Public.Pages
         }
 
        
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostCreateNewProjectAsync()
         {
+            
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -69,7 +71,7 @@ namespace Public.Pages
             Project.OwnerID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             Project.BgColor = "#ffffff";
             Project.TextColor = "#000000";
-            
+            Project.Font = "Roboto";
 
             SitePage index = new()
             {
@@ -128,7 +130,7 @@ namespace Public.Pages
                 .Include(p => p.Pages)
                 .ThenInclude(p => p.PageComponents)
                 .ThenInclude(pc => pc.Columns)
-                .FirstOrDefault(p => p.ID == deleteID);
+                .FirstOrDefault(p => p.ID == deleteID); 
 
             if (!String.IsNullOrEmpty(CurrentProject.CoverImageURL))
             {
@@ -142,7 +144,7 @@ namespace Public.Pages
                     {
                         if (!String.IsNullOrEmpty(cc.ImageURL))
                         {
-                            System.IO.File.Delete(cc.ImageURL);
+                            System.IO.File.Delete("./wwwroot/img/" + cc.ImageURL);
                         }
                     }
                 }

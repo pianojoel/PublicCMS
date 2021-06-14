@@ -1,0 +1,27 @@
+﻿@using Public.Models
+@code {
+    [Parameter]
+    public PageComponent Comp { get; set; }
+    [Parameter]
+    public ColumnComp Column { get; set; }
+    [Parameter]
+    public int PageId { get; set; }
+    [Parameter]
+    public int CompId { get; set; }
+    [Parameter]
+    public bool Display { get; set; }
+}
+
+<div class="resp-container">
+    <iframe class="resp-iframe w-100" style="border:0; height:400px"
+            loading="lazy"
+            allowfullscreen
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBI_vWlTKql2bCHox8NOG0uZbaMKOK7iYY&q=@Column.MapLocation">
+    </iframe>
+</div>
+@if(!Display)
+{
+<input class="maploc @($"maploc{CompId}{Column.ID}")" type="text" onclick="this.select()" value="@Column.MapLocation" onkeydown="pressEnterSubmit(event, 'maploc', 'maploc'+@CompId+@Column.ID,'btn'+@CompId+@Column.ID)" name="MapLocation" placeholder="Location" />
+
+<button class="d-none" id=@($"btn{CompId}{Column.ID}") formaction="?handler=SetMapLocation&compid=@CompId&PageId=@PageId&displayorder=@Column.DisplayOrder" )">Set Location</button>
+}
