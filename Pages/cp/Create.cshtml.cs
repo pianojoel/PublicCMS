@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Public.Data;
 using Public.Models;
 
@@ -38,12 +39,12 @@ namespace Public.Pages.cp
                 return Page();
             }
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
-            CurrentProject = _context.Projects.Find(id);
-           
+            CurrentProject = _context.Projects.Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
+            
             SitePage.ProjectID = CurrentProject.ID;
             //SitePage.PageBody = "Hello World!";
             _context.SitePage.Add(SitePage);
-
+            CurrentProject.MenuItems.Add(new MenuItem($"/display/{CurrentProject.ProjectNameRoute}/{SitePage.SitePageTitleRoute}", SitePage.Title, CurrentProject.MenuItems.Count()));
 
 
 

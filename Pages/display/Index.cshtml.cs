@@ -19,7 +19,7 @@ namespace Public.Pages.display
         private readonly PublicContext _ctx;
         public HttpClient _client = new HttpClient();
         public int Visitors { get; set; }
-        
+        public string PageName { get; set; }
         public Project CurrentProject { get; set; }
         [BindProperty(SupportsGet=true)]
         public int PageId { get; set; }
@@ -33,8 +33,9 @@ namespace Public.Pages.display
         {
             _ctx = ctx;
         }
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string pagename)
         {
+            PageName = pagename;
             var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
             CurrentProject = _ctx.Projects.Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
 
@@ -45,10 +46,15 @@ namespace Public.Pages.display
                 .Where(p => p.ProjectID == CurrentProject.ID)
                 .ToListAsync();
 
+            if(PageName != null)
+            {
+                PageId = SitePages.FirstOrDefault(sp => sp.SitePageTitleRoute == PageName).ID;
+            }
+
             if (PageId == 0)
             {
                 PageId = CurrentProject.Pages.FirstOrDefault(p => p.IsIndex).ID;
-                return Redirect("?pageid=" + PageId);
+                //return Redirect("?pageid=" + PageId);
             }
 
             if (PageId != 0)

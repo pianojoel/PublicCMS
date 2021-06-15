@@ -93,9 +93,9 @@ namespace Public.Pages
             Project.Pages.Add(privacy);
             Project.Pages.Add(about);
             Project.MenuItems = new();
-            Project.MenuItems.Add(new MenuItem("/index", "Home", 0));
-            Project.MenuItems.Add(new MenuItem("/privacy", "Privacy", 1));
-            Project.MenuItems.Add(new MenuItem("/about", "About", 2));
+            Project.MenuItems.Add(new MenuItem($"/display/{Project.ProjectNameRoute}/index", "Home", 0));
+            Project.MenuItems.Add(new MenuItem($"/display/{Project.ProjectNameRoute}/privacy", "Privacy", 1));
+            Project.MenuItems.Add(new MenuItem($"/display/{Project.ProjectNameRoute}/about", "About", 2));
             Project.MenuType = "h";
 
             Project.FooterContent = "(c) " + DateTime.Now.Year + " " + Project.OwnerName;  

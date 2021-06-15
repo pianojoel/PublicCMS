@@ -39,7 +39,7 @@
             <a class="btn btn-primary" href="/cp/projectsettings">Project Settings</a>
         </div>
         <div class="col-4">
-            <a class="btn btn-primary" href=@("/display/" + Model.CurrentProject.ProjectNameRoute)>Display page</a>
+            <a class="btn btn-primary" href=@("/display/" + Model.CurrentProject.ProjectNameRoute + "/" + Model.CurrentPage.SitePageTitleRoute)>Display page</a>
         </div>
     </div>
 </div>
@@ -66,19 +66,12 @@
         menubar: false,
         inline: true,
         height: 300,
-
         setup: function (editor) {
             editor.on('blur', function (e) {
-
-                let id = $(this).attr("id");
-                console.log(id);
-
+                let id = $(this).attr("id");                
                 document.getElementById("b" + id).click();
             });
         }
-
-
-
     });
 
     tinymce.init({
@@ -93,25 +86,15 @@
         toolbar: false,
         menubar: false,
         inline: true,
-        height: 300,
-        
+        height: 300,        
         setup: function (editor) {
             editor.on('blur', function (e) {
-
-                let id = $(this).attr("id");
-                console.log(id);
-
+                let id = $(this).attr("id");                
                 document.getElementById("b" + id).click();
             });
-        }
-
-
-       
+        }       
     });
-
-
    
-
 </script>
 
 
@@ -129,7 +112,7 @@
 
                 @foreach (var comp in Model.PageComponents)
                 {
-                    <div style="background-color:@comp.BgColor" class="row comp-row" id=@("Row" + @comp.ID)>
+                    <div style="background-color:@comp.BgColor" class="row comp-row align-items-center" id=@("Row" + @comp.ID)>
                         <div class="col-1">
                             <button class="d-none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
                             <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" value="@comp.BgColor"/>

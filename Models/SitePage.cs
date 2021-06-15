@@ -14,7 +14,7 @@ namespace Public.Models
         public List<PageComponent> PageComponents { get; set; }
         public bool IsIndex { get; set; }
         public string ImageURL { get; set; }
-        public string SitePageTitleRoute => Title.Trim().Replace(' ', '-');
+        public string SitePageTitleRoute => Title.ToLower().Trim().Replace(' ', '-');
         public string PageGuid { get; set; }
 
         public string TickerSymbol1 { get; set; }

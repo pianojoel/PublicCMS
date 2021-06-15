@@ -9,7 +9,7 @@ namespace Public.Models
     {
         public int ID { get; set; }
         public string ProjectName { get; set; }
-        public string ProjectNameRoute => ProjectName.Trim().Replace(' ', '-');
+        public string ProjectNameRoute => ProjectName.ToLower().Trim().Replace(' ', '-');
         public List<SitePage> Pages { get; set; } = new();     
         public List<MenuItem> MenuItems { get; set; }
         public bool EnableMenu { get; set; }

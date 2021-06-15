@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Public.Data;
 using Public.Models;
-using static Public.Models.Misc;
 
 namespace Public.Pages.cp
 {
