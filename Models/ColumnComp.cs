@@ -21,6 +21,7 @@ namespace Public.Models
         public string MapLocation { get; set; }
         public int Mapsize { get; set; }
         public string VideoString { get; set; }
+        public string PluginString { get; set; }
 
 
 

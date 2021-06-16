@@ -29,24 +29,34 @@
 
 }
 
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=@Model.CurrentProject.Font">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=@Model.CurrentProject.Font">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=@Model.CurrentProject.MenuFont">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=@Model.CurrentProject.FooterFont">
+
 <style>
         .container
         {
             background-color:@Model.CurrentProject.BgColor;
             color:@Model.CurrentProject.TextColor;
             font-family:@Model.CurrentProject.Font, sans-serif;
+            font-size:@(Model.CurrentProject.FontSize +"px");
+        }
+        body{
+            background-color:@Model.CurrentProject.BgColor;
         }
         .menucolors{
             color:@Model.CurrentProject.MenuTextColor;
             background-color:@Model.CurrentProject.MenuBgColor;
+            font-family:@Model.CurrentProject.MenuFont, sans-serif;
+            font-size:@(Model.CurrentProject.MenuFontSize +"px");
 
         }
         .myfooter{
             min-height:100px;
             color:@Model.CurrentProject.FooterTextColor;
             background-color:@Model.CurrentProject.FooterBgColor;
+            font-family:@Model.CurrentProject.FooterFont, sans-serif;
+            font-size:@(Model.CurrentProject.FooterFontSize +"px");
         }
 
 
@@ -87,13 +97,14 @@
                 {
                     <component type="typeof(Components.GoogleMapComponent)" render-mode="ServerPrerendered" param-Display=true param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
                 }
-                else if (column.ComponentType == "video")
-                {
-                    <component type="typeof(Components.YoutubeComponent)" render-mode="ServerPrerendered" param-Display=true param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                }
+               
                 else if (column.ComponentType == "visitorcounter")
                 {
                     <component type="typeof(Components.VisitorCounterComponent)" render-mode="ServerPrerendered" param-visitors=@Model.Visitors />
+                }
+                else if (column.ComponentType == "plugin")
+                {
+                    <component type="typeof(Components.PluginComponent)" render-mode="ServerPrerendered" param-Display=true param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
                 }
                 else if (column.ComponentType == "stockticker")
                 {

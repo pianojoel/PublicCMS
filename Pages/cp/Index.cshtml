@@ -1,6 +1,8 @@
 ﻿@page "{projectname?}/{id?}"
 @using Microsoft.AspNetCore.Html
 @using Models
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 
 @model Public.Pages.cp.IndexModel
 
@@ -10,30 +12,36 @@
 
 
 <div class="text-center">
-    <div class="row">
+    <form method="post">
+        <div class="row">
 
-        @foreach (var item in Model.SitePages)
-        {
-        <div class="col">
-            <div class="glass-card">
-                <a  href="?pageid=@item.ID">
-                    @Html.DisplayFor(modelItem => item.Title)
-                </a>
+            @foreach (var item in Model.SitePages)
+            {
+                <div class="col">
+                    <div class="glass-card">
+                        <a href="?pageid=@item.ID">
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </a>
+
+                        <button class="border-0 bg-transparent" asp-page-handler="DeletePage" asp-route-pageid="@Model.PageId" asp-route-deletePageID="@item.ID" style="position:absolute; top:2px;right:2px"><img src="~/deleteicon.png" width="25" /></button>
+
+                    </div>
+
+
+                </div>
+            }
+
+            <div class="col">
+                <div class="glass-card">
+                    <a asp-page="Create">New Page</a>
+
+                </div>
+
+
             </div>
 
-
         </div>
-        }
-
-    <div class="col">
-        <div class="glass-card">
-            <a asp-page="Create">New Page</a>
-            </div>
-
-
-        </div>
-
-    </div>
+    </form>
     <div class="row mt-3">
         <div class="col-4">
             <a class="btn btn-primary" href="/cp/projectsettings">Project Settings</a>
@@ -51,16 +59,16 @@
 
     tinymce.init({
         selector: '.myeditablediv',
-       
+
         plugins: [
             'autolink',
             'codesample',
             'link',
-            'lists',                                    
-            'quickbars',            
+            'lists',
+            'quickbars',
             'textcolor'
         ],
-        quickbars_selection_toolbar: 'bold italic | alignleft aligncenter alignright | quicklink | forecolor backcolor',
+        quickbars_selection_toolbar: 'bold italic fontsizeselect | alignleft aligncenter alignright | quicklink | forecolor backcolor',
         quickbars_insert_toolbar: false,
         toolbar: false,
         menubar: false,
@@ -68,7 +76,7 @@
         height: 300,
         setup: function (editor) {
             editor.on('blur', function (e) {
-                let id = $(this).attr("id");                
+                let id = $(this).attr("id");
                 document.getElementById("b" + id).click();
             });
         }
@@ -78,23 +86,23 @@
         selector: '.myeditablediv-header',
         plugins: [
             'autolink',
-            'quickbars',   
+            'quickbars',
             'link',
         ],
         quickbars_selection_toolbar: 'bold italic | alignleft aligncenter alignright | forecolor backcolor',
-        quickbars_insert_toolbar: false,        
+        quickbars_insert_toolbar: false,
         toolbar: false,
         menubar: false,
         inline: true,
-        height: 300,        
+        height: 300,
         setup: function (editor) {
             editor.on('blur', function (e) {
-                let id = $(this).attr("id");                
+                let id = $(this).attr("id");
                 document.getElementById("b" + id).click();
             });
-        }       
+        }
     });
-   
+
 </script>
 
 
@@ -104,7 +112,7 @@
 
     <div>
 
-       
+
         <div>
 
 
@@ -115,7 +123,7 @@
                     <div style="background-color:@comp.BgColor" class="row comp-row align-items-center" id=@("Row" + @comp.ID)>
                         <div class="col-1">
                             <button class="d-none" id="@("btn" + comp.ID)" asp-page-handler="ChangeBgColor" asp-route-pageid="@Model.PageId" asp-route-compid="@comp.ID"></button>
-                            <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" value="@comp.BgColor"/>
+                            <input id="@("Bg" + comp.ID)" class="colorpicker" onclick='enable("@("Bg" + comp.ID)")' oninput='changeColor("@("btn" + comp.ID)")' name="BgColor" type="color" value="@comp.BgColor" />
                         </div>
 
                         <div class="col-1">
@@ -136,53 +144,54 @@
 
                                 @foreach (var column in comp.Columns)
                                 {
-                                <div class="col">
-                                    @if (column.ComponentType == "default")
-                                    {
-                                        <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-CurrentPage="@Model.CurrentPage" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
-                                    }
-                                    else if (column.ComponentType == "text")
-                                    {
-                                        <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Column="@column" />
-                                    }
-                                    else if (column.ComponentType == "link")
-                                    {
-                                        <component type="typeof(Components.LinkComponent)" render-mode="Static" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                    }
+                                    <div class="col">
+                                        @if (column.ComponentType == "default")
+                                        {
+                                            <component type="typeof(Components.DefaultComponent)" render-mode="ServerPrerendered" param-CurrentPage="@Model.CurrentPage" param-Comp="@comp" param-Column="@column" param-PageId="@Model.PageId" />
+                                        }
+                                        else if (column.ComponentType == "text")
+                                        {
+                                            <component type="typeof(Components.TextComponent)" render-mode="ServerPrerendered" param-Column="@column" />
+                                        }
+                                        else if (column.ComponentType == "link")
+                                        {
+                                            <component type="typeof(Components.LinkComponent)" render-mode="Static" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                        }
 
-                                    else if (column.ComponentType == "header")
-                                    {
-                                        <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-Column="@column" />
-                                    }
-                                    else if (column.ComponentType == "image")
-                                    {
-                                        <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                    }
-                                    else if (column.ComponentType == "googlemap")
-                                    {
-                                        <component type="typeof(Components.GoogleMapComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                    }
-                                    else if (column.ComponentType == "stockticker")
-                                    {
-                                        <component type="typeof(Components.StockTickerComponent)" render-mode="ServerPrerendered" param-CurrentPage="@Model.CurrentPage" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                    }
-                                    else if (column.ComponentType == "video")
-                                    {
-                                        <component type="typeof(Components.YoutubeComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
-                                    }
-                                    else if (column.ComponentType == "visitorcounter")
-                                    {
-                                        <component type="typeof(Components.VisitorCounterComponent)" render-mode="ServerPrerendered" param-visitors=@Model.Visitors />
-                                    }
-                                    <button class="d-none" id="@("b" + column.ID)" asp-page-handler="SaveColumnComp" asp-route-compid="@comp.ID" asp-route-column="@column.ID" asp-route-pageid="@Model.PageId"></button>
-                                </div>
+                                        else if (column.ComponentType == "header")
+                                        {
+                                            <component type="typeof(Components.HeaderComponent)" render-mode="ServerPrerendered" param-Column="@column" />
+                                        }
+                                        else if (column.ComponentType == "image")
+                                        {
+                                            <component type="typeof(Components.ImageComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                        }
+                                        else if (column.ComponentType == "googlemap")
+                                        {
+                                            <component type="typeof(Components.GoogleMapComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                        }
+                                        else if (column.ComponentType == "stockticker")
+                                        {
+                                            <component type="typeof(Components.StockTickerComponent)" render-mode="ServerPrerendered" param-CurrentPage="@Model.CurrentPage" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                        }
+
+                                        else if (column.ComponentType == "plugin")
+                                        {
+                                            <component type="typeof(Components.PluginComponent)" render-mode="ServerPrerendered" param-Column="@column" param-CompId="comp.ID" param-PageId="@Model.PageId" />
+                                        }
+                                        else if (column.ComponentType == "visitorcounter")
+                                        {
+                                            <component type="typeof(Components.VisitorCounterComponent)" render-mode="ServerPrerendered" param-visitors=@Model.Visitors />
+                                        }
+                                        <button class="d-none" id="@("b" + column.ID)" asp-page-handler="SaveColumnComp" asp-route-compid="@comp.ID" asp-route-column="@column.ID" asp-route-pageid="@Model.PageId"></button>
+                                    </div>
                                 }
                             </div>
                         </div>
 
 
                         <div class="col-2">
-                            <button class="btn btn-primary" asp-page-handler="Remove" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId"><img src="~/deleteicon.png" width="25"></button>
+                            <button class="btn btn-primary" asp-page-handler="RemoveRow" asp-route-deleteid="@comp.ID" asp-route-pageid="@Model.PageId"><img src="~/deleteicon.png" width="25"></button>
 
 
                             @if (comp.DisplayOrder != 0)
@@ -196,15 +205,15 @@
                             {<button disabled class="btn btn-primary disabled">&darr;</button>}
 
                         </div>
-                     </div>
+                    </div>
 
                 }
-                        <div class="row mt-3">                            
-                                <button asp-page-handler="AddComponent" asp-route-pageid="@Model.PageId" class="btn btn-secondary newcomponent-button" id="dropdownMenuButton">Add row</button>                            
-                        </div>
+                <div class="row mt-3">
+                    <button asp-page-handler="AddComponent" asp-route-pageid="@Model.PageId" class="btn btn-secondary newcomponent-button" id="dropdownMenuButton">Add row</button>
+                </div>
 
-                    
-                
+
+
             </form>
 
         </div>
@@ -350,7 +359,17 @@
             console.log("remove " + id)
             document.getElementById(id).remove();
         }
-
+        
+            console.log("hej hej");
+        let lastElement = "Row" + @Json.Serialize(Model.LastElement);
+        console.log(lastElement);
+        let element = document.getElementById(lastElement);
+        element.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        });
+        
 
 
     </script>

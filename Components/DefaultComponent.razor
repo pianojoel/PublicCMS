@@ -14,19 +14,14 @@
 
 
 <div class="dropdown">
-    <button asp-page-handler="AddComponent" class="btn btn-secondary dropdown-toggle newcomponent-button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
+    <button asp-page-handler="AddComponent" class="btn btn-secondary dropdown-toggle newcomponent-button mt-5" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add component</button>
     <div class="dropdown-menu position-static" aria-labelledby="dropdownMenuButton">
         <button formaction="?handler=SetColumnCompType&comptype=text&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add text component</button>
         <button formaction="?handler=SetColumnCompType&comptype=image&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add image</button>
         <button formaction="?handler=SetColumnCompType&comptype=header&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add header</button>
         <button formaction="?handler=SetColumnCompType&comptype=link&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add link</button>
         <button formaction="?handler=SetColumnCompType&comptype=visitorcounter&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add visitor counter</button>
-        @if(Column.ComponentType != "video")
-            {
-        <button formaction="?handler=SetColumnCompType&comptype=video&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add video</button>
-
-            }
-
+        <button formaction="?handler=SetColumnCompType&comptype=plugin&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add plugin</button>       
         <button formaction="?handler=SetColumnCompType&comptype=googlemap&compid=@(Comp.ID)&PageId=@PageId&displayorder=@Column.DisplayOrder" class="dropdown-item">Add map</button>
 
         @if (!CurrentPage.PageComponents.Any(pc => pc.Columns.Any(cc => cc.ComponentType == "stockticker")))

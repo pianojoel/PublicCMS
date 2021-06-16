@@ -1,0 +1,40 @@
+﻿@using Public.Models
+
+@code {
+    [Parameter]
+    public PageComponent Comp { get; set; }
+    [Parameter]
+    public ColumnComp Column { get; set; }
+    [Parameter]
+    public int PageId { get; set; }
+    [Parameter]
+    public int CompId { get; set; }
+    [Parameter]
+    public bool Display { get; set; }
+
+}
+
+@if (!Display)
+{
+
+
+    <div class="text-center">
+        @(new MarkupString(Column.PluginString))
+
+    </div>
+    <div class="text-center">
+        <label for="pluginstring">Paste your code here:</label>
+        <textarea class="w-100 plugin @($"plugin{CompId}{Column.ID}")"  name="pluginstring" id="pluginstring" rows="4" cols="50">
+@(new MarkupString(Column.PluginString))
+</textarea>
+        <a class="btn btn-primary" onclick="pressBtn('plugin', 'plugin'+@CompId+@Column.ID,'btn'+@CompId+@Column.ID)">Set Plugin</a>
+        <button class="d-none" id=@($"btn{CompId}{Column.ID}") formaction="?handler=SetPlugin&compid=@CompId&PageId=@PageId&displayorder=@Column.DisplayOrder" )">Set Plugin</button>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        @(new MarkupString(Column.PluginString))
+
+    </div>
+}

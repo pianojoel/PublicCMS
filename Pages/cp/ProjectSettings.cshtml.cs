@@ -19,6 +19,8 @@ namespace Public.Pages.cp
 
         private readonly PublicContext _ctx;
         public HttpClient _client = new HttpClient();
+        [BindProperty]
+        public int FontSize { get; set; }
         public GoogleFont GoogleFont { get; set; } 
         [BindProperty]
         public List<MenuItem> MenuItems { get; set; }
@@ -51,6 +53,14 @@ namespace Public.Pages.cp
         public string FooterBgColor { get; set; }
        [BindProperty]
         public string FooterContent { get; set; }
+        [BindProperty]
+        public int MenuFontSize { get; set; }
+        [BindProperty]
+        public string MenuFont { get; set; }
+        [BindProperty]
+        public int FooterFontSize { get; set; }
+        [BindProperty]
+        public string FooterFont { get; set; }
 
         public ProjectSettingsModel(PublicContext ctx)
         {
@@ -65,6 +75,9 @@ namespace Public.Pages.cp
             Menutype = CurrentProject.MenuType;
             EnableMenu = CurrentProject.EnableMenu;
             EnableFooter = CurrentProject.EnableFooter;
+            FontSize = CurrentProject.FontSize;
+            MenuFontSize = CurrentProject.MenuFontSize;
+            FooterFontSize = CurrentProject.FooterFontSize;
 
             await OnPostGetFontsAsync();
             return Page();
@@ -173,7 +186,7 @@ namespace Public.Pages.cp
             {
                 CurrentProject.Font = Font;
             }
-
+            CurrentProject.FontSize = FontSize;
             await _ctx.SaveChangesAsync();
             return Redirect("./ProjectSettings");
         }
@@ -230,6 +243,43 @@ namespace Public.Pages.cp
             return Page();
         }
 
-        
+        public async Task<IActionResult> OnPostSetMenuFontAsync()
+        {
+            var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
+            CurrentProject = _ctx.Projects.Include(p => p.Pages).Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
+
+            if (MenuFont != null)
+            {
+                CurrentProject.MenuFont = MenuFont;
+            }
+            if (MenuFontSize > 0)
+            {
+                CurrentProject.MenuFontSize = MenuFontSize;
+            }
+
+
+            await _ctx.SaveChangesAsync();
+            return Redirect("./ProjectSettings");
+        }
+        public async Task<IActionResult> OnPostSetFooterFontAsync()
+        {
+            var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
+            CurrentProject = _ctx.Projects.Include(p => p.Pages).Include(p => p.MenuItems).FirstOrDefault(p => p.ID == id);
+
+            if (FooterFont != null)
+            {
+                CurrentProject.FooterFont = FooterFont;
+            }
+            if (FooterFontSize > 0)
+            {
+                CurrentProject.FooterFontSize = FooterFontSize;
+            }
+
+
+            await _ctx.SaveChangesAsync();
+
+
+            return Redirect("./ProjectSettings");
+        }
     }
 }

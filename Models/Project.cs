@@ -22,10 +22,15 @@ namespace Public.Models
         public string MenuBgColor { get; set; }
         public string MenuTextColor { get; set; }
         public string Font { get; set; }
+        public int FontSize { get; set; }
         public bool EnableFooter { get; set; }
         public string FooterBgColor { get; set; }
         public string FooterTextColor { get; set; }
         public string FooterContent { get; set; }
+        public string MenuFont { get; set; }
+        public int MenuFontSize { get; set; }
+        public string FooterFont { get; set; }
+        public int FooterFontSize { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

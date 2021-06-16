@@ -20,7 +20,7 @@
 
     @if (!Display)
     {
-        <div>
+        <div class="text-center">
             <input id="@($"range{CompId}{Column.ID}")" class="rangeinput @($"range{CompId}{Column.ID}") " type="range" name="ImageSize" onchange="pressBtn('rangeinput','range'+@CompId + @Column.ID, 'btn' + @CompId + @Column.ID)" oninput="changeImgSize('img' + @CompId + @Column.ID, 'range' + @CompId + @Column.ID)" value="@Column.ImageSize" />
             <button class="d-none" id=@($"btn{CompId}{Column.ID}") formaction="?handler=SetImageSize&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Size</button>
         </div>
@@ -30,8 +30,11 @@
 }
 else
 {
-    <div class="text-center my-auto">
-        <input type="file" name="UploadedImage" value="Image File" />
-        <button formaction="?handler=SetImage&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Image</button>
-        </div>
-        }
+    <div class="text-center mt-5">
+        <input class="btn btn-primary" type="file" name="UploadedImage" value="Image File" />
+        <button class="btn btn-primary" formaction="?handler=SetImage&compid=@CompId&pageid=@PageId&displayorder=@Column.DisplayOrder">Set Image</button>
+    </div>
+
+   
+
+}

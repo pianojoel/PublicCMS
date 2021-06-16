@@ -12,6 +12,7 @@ namespace Public.Models
         public string Text { get; set; }
         public string TargetURL { get; set; }
         public int DisplayOrder { get; set; }
+        
         public int ProjectId { get; set; } 
         public Project Project { get; set; }
         public MenuItem()

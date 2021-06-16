@@ -18,7 +18,11 @@ namespace Public.Pages.cp
     {
         private readonly Public.Data.PublicContext _ctx;
         public HttpClient _client = new HttpClient();
+        [TempData]
+        public int LastElement { get; set; }
         public int Visitors { get; set; }
+        [BindProperty]
+        public string PluginString { get; set; }
         public Project CurrentProject { get; set; }
         [BindProperty(SupportsGet = true)]
         public int PageId { get; set; }
@@ -27,6 +31,8 @@ namespace Public.Pages.cp
         public List<PageComponent> PageComponents { get; set; }
         [BindProperty]
         public string TextBlock { get; set; }
+        [BindProperty]
+        public int DeletePageId { get; set; }
 
         public IndexModel(Public.Data.PublicContext ctx)
         {
@@ -119,7 +125,7 @@ namespace Public.Pages.cp
             await _ctx.SaveChangesAsync();
 
 
-
+            LastElement = p.PageComponents[order].ID;
             return Redirect("?pageid=" + PageId);
         }
         public async Task<IActionResult> OnPostMoveDownAsync(int order)
@@ -132,12 +138,12 @@ namespace Public.Pages.cp
 
             await _ctx.SaveChangesAsync();
 
-
+            LastElement = p.PageComponents[order].ID;
 
             return Redirect("?pageid=" + PageId);
         }
 
-        public async Task<IActionResult> OnPostRemoveAsync(int deleteid)
+        public async Task<IActionResult> OnPostRemoveRowAsync(int deleteid)
         {
             var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
 
@@ -200,6 +206,8 @@ namespace Public.Pages.cp
 
             await _ctx.SaveChangesAsync();
 
+            LastElement = comp.ID;
+
             return Redirect("?pageid=" + PageId);
         }
         public async Task<IActionResult> OnPostAddColumnAsync(int compid)
@@ -211,6 +219,8 @@ namespace Public.Pages.cp
             pc.Columns.Add(new ColumnComp(displayorder));
 
             await _ctx.SaveChangesAsync();
+            
+            LastElement = compid;
 
             return Redirect("?pageid=" + PageId);
         }
@@ -226,7 +236,7 @@ namespace Public.Pages.cp
             pc.BgColor = BgColor;
            
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
 
 
@@ -244,7 +254,7 @@ namespace Public.Pages.cp
             pc.Content = newpc.Value;
 
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
 
 
@@ -263,7 +273,7 @@ namespace Public.Pages.cp
             cc.Content = newpc.Value;
 
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
 
 
@@ -284,9 +294,9 @@ namespace Public.Pages.cp
                 }
             }
             cc.ImageURL = UploadedImage != null ? UploadedImage.FileName : "";
-
+            cc.ImageSize = 50;
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
         }  
 
@@ -299,6 +309,7 @@ namespace Public.Pages.cp
             cc.LinkURL = LinkURL;
             cc.LinkText = LinkText;
             await _ctx.SaveChangesAsync();
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
         }
 
@@ -310,7 +321,7 @@ namespace Public.Pages.cp
 
             cc.ComponentType = comptype;
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
         }
 
@@ -323,7 +334,7 @@ namespace Public.Pages.cp
             cc.ImageSize = ImageSize;
 
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
         }
 
@@ -339,7 +350,7 @@ namespace Public.Pages.cp
             }
 
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
         }
 
@@ -361,7 +372,7 @@ namespace Public.Pages.cp
             p.TickerName5 = TickerName5;
 
             await _ctx.SaveChangesAsync();
-
+            LastElement = compid;
             return Redirect("?pageid=" + PageId);
         }
 
@@ -377,7 +388,55 @@ namespace Public.Pages.cp
             }
 
             await _ctx.SaveChangesAsync();
+            LastElement = compid;
+            return Redirect("?pageid=" + PageId);
+        }
 
+        public async Task<IActionResult> OnPostSetPluginAsync(int compid, int displayOrder)
+        {
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == PageId);
+
+            var cc = p.PageComponents.FirstOrDefault(pc => pc.ID == compid).Columns.FirstOrDefault(cc => cc.DisplayOrder == displayOrder);
+
+            if (PluginString != null)
+            {
+                cc.PluginString = PluginString;
+            }
+
+            await _ctx.SaveChangesAsync();
+            LastElement = compid;
+            return Redirect("?pageid=" + PageId);
+        }
+
+        public async Task<IActionResult> OnPostDeletePageAsync()
+        { 
+            var p = _ctx.SitePage.Include(p => p.PageComponents).ThenInclude(pc => pc.Columns).FirstOrDefault(sp => sp.ID == DeletePageId);
+            if (!p.IsIndex)
+            {               
+                foreach (var row in p.PageComponents)
+                {
+                    foreach (var col in row.Columns)
+                    {
+                        if (col.ImageURL != null)
+                        {
+                            try
+                            {
+                                System.IO.File.Delete("./wwwroot/img/" + col.ImageURL);
+                            }
+                            catch { }
+                        }
+
+                    }
+                    row.Columns.Clear();
+                }
+
+                p.PageComponents.Clear();
+
+               var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
+               CurrentProject = _ctx.Projects.Find(id);
+               CurrentProject.Pages.Remove(p);
+                await _ctx.SaveChangesAsync();
+            }
             return Redirect("?pageid=" + PageId);
         }
     }

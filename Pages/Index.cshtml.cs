@@ -72,6 +72,7 @@ namespace Public.Pages
             Project.BgColor = "#ffffff";
             Project.TextColor = "#000000";
             Project.Font = "Roboto";
+            Project.FontSize = 16;
 
             SitePage index = new()
             {

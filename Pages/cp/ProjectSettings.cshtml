@@ -22,8 +22,8 @@
 
         <form method="post">
             <div class="row">
-                <div class="col-6">
-                    <h6>Select menu layout:</h6>
+                <div class="col-4">
+                    <h5>Menu layout:</h5>
                     <input type="radio" asp-for="Menutype" value="h">
                     <label>Horizontal</label><br />
                     <input type="radio" asp-for="Menutype" value="vl">
@@ -32,8 +32,8 @@
                     <label>Vertical right</label><br />
                     <button class="btn btn-primary" asp-page-handler="SetLayout">Set layout</button>
                 </div>
-                <div class="col-6">
-                    <h6>Select menu colors:</h6>
+                <div class="col-4">
+                    <h5>Menu colors:</h5>
                     <div class="form-group">
 
                         <input type="color" asp-for="MenuBgColor" value="@Model.CurrentProject.MenuBgColor" />
@@ -46,6 +46,37 @@
                     </div>
                     <button class="btn btn-primary" asp-page-handler="SetMenuColors">Set menu colors</button>
                 </div>
+
+                <div class="col-4">
+                    <h5>Menu font and size:</h5>
+                    <div class="form-group">
+
+                        <label for="FontSize">Font Size:</label>
+                        <input type="text" asp-for="MenuFontSize" value="@Model.MenuFontSize" /><br />
+                    </div>
+                    <div class="form-group">
+                        <label for="MenuFont">Font</label>
+                        <select asp-for="MenuFont" class="form-control" data-role="select-dropdown">
+
+                            @foreach (var font in Model.GoogleFont.items)
+                            {
+                                @if (font.family == Model.CurrentProject.MenuFont)
+                                {
+                                    <option selected>@font.family</option>
+                                }
+                                else
+                                {
+                                    <option>@font.family</option>
+                                }
+
+                            }
+
+                        </select>
+
+                    </div>
+                    <button class="btn btn-primary" asp-page-handler="SetMenuFont">Set menu font</button>
+                </div>
+
             </div>
             <table class="table mt-3">
                 <thead>
@@ -149,17 +180,11 @@
 
                 }
 
-
-
-                @*<option>Montserrat</option>
-                    <option>Roboto</option>
-                    <option>Merriweather</option>*@
-
-
-
             </select>
-        </div>
 
+        </div>
+        <label for="FontSize">Font Size:</label>
+        <input type="text" asp-for="FontSize" value="@Model.FontSize" /><br />
         <button class="btn btn-primary" asp-page-handler="ChangeSettings">Change Settings</button>
     </form>
 </div>
@@ -177,31 +202,62 @@
     </form>
 
     @if (Model.EnableFooter)
-    {
-        <div>
-            <form method="post">
-                <div class="form-group">
+    {<div class="row">
+            <div class="col-6">
+                <form method="post">
+                    <div class="form-group">
 
-                    <input type="color" asp-for="FooterBgColor" value="@Model.CurrentProject.FooterBgColor" />
-                    <label for="FooterBgColor">Background color</label>
-                </div>
-                <div class="form-group">
+                        <input type="color" asp-for="FooterBgColor" value="@Model.CurrentProject.FooterBgColor" />
+                        <label for="FooterBgColor">Background color</label>
+                    </div>
+                    <div class="form-group">
 
-                    <input type="color" asp-for="FooterTextColor" value="@Model.CurrentProject.FooterTextColor" />
-                    <label for="FooterTextColor">Text color</label>
-                </div>
-                <div class="form-group">
-                    <label for="FooterContent">Footer content</label>
-                    <input type="text" asp-for="FooterContent" value="@Model.CurrentProject.FooterContent" />
+                        <input type="color" asp-for="FooterTextColor" value="@Model.CurrentProject.FooterTextColor" />
+                        <label for="FooterTextColor">Text color</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="FooterContent">Footer content</label>
+                        <input type="text" asp-for="FooterContent" value="@Model.CurrentProject.FooterContent" />
 
-                </div>
+                    </div>
 
-                <button class="btn btn-primary" asp-page-handler="ChangeFooterSettings">Change Settings</button>
-            </form>
+                    <button class="btn btn-primary" asp-page-handler="ChangeFooterSettings">Change Settings</button>
+                </form>
 
 
+            </div>
+            <div class="col-6">
+                <h5>Font and size:</h5>
+                <form method="post">
+                    <div class="form-group">
+
+                        <label for="FontSize">Font Size:</label>
+                        <input type="text" asp-for="FooterFontSize" value="@Model.FooterFontSize" /><br />
+                    </div>
+                    <div class="form-group">
+                        <label for="FooterFont">Font</label>
+                        <select asp-for="FooterFont" class="form-control" data-role="select-dropdown">
+
+                            @foreach (var font in Model.GoogleFont.items)
+                            {
+                                @if (font.family == Model.CurrentProject.FooterFont)
+                                {
+                                    <option selected>@font.family</option>
+                                }
+                                else
+                                {
+                                    <option>@font.family</option>
+                                }
+
+                            }
+
+                        </select>
+
+                    </div>
+                    <button class="btn btn-primary" asp-page-handler="SetFooterFont">Set footer font</button>
+                </form>
+            </div>
         </div>
-
 
     }
 
