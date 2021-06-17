@@ -435,7 +435,10 @@ namespace Public.Pages.cp
                var id = int.Parse(HttpContext.Session.GetString("CurrentProjectID"));
                CurrentProject = _ctx.Projects.Find(id);
                CurrentProject.Pages.Remove(p);
+               
                 await _ctx.SaveChangesAsync();
+
+                PageId = _ctx.SitePage.FirstOrDefault(p => p.IsIndex && p.ProjectID == CurrentProject.ID).ID;
             }
             return Redirect("?pageid=" + PageId);
         }

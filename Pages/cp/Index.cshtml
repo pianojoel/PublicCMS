@@ -22,9 +22,10 @@
                         <a href="?pageid=@item.ID">
                             @Html.DisplayFor(modelItem => item.Title)
                         </a>
-
+                        @if (!item.IsIndex)
+                        {
                         <button class="border-0 bg-transparent" asp-page-handler="DeletePage" asp-route-pageid="@Model.PageId" asp-route-deletePageID="@item.ID" style="position:absolute; top:2px;right:2px"><img src="~/deleteicon.png" width="25" /></button>
-
+                        }
                     </div>
 
 
