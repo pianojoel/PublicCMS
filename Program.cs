@@ -24,14 +24,15 @@ namespace Public
             {
                 var db = scope.ServiceProvider.GetRequiredService<PublicContext>();
                 var udb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
+                
                 // Uncomment if you want to delete an existing database and start over.
                 //db.Database.EnsureDeleted();
-                db.Database.EnsureCreated();
-                udb.Database.EnsureCreated();
-                
+                if (db.Database.EnsureCreated())
+                {
+                    //db.Database.Migrate();
+                    udb.Database.Migrate();
                    
-                
+                }
             }
 
 
